@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import bcrypt
 
 app = Flask(__name__)
 
@@ -6,6 +7,15 @@ app = Flask(__name__)
 def receive_json():
     # Recibir el JSON enviado por POST
     data = request.json
+
+    # Validar que los campos necesarios estén presentes
+    required_fields = ["Username", "Document", "Password", "Champion_Prediction", "Second_Prediction"]
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # Hashear la contraseña
+    password = data["Password"]
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Puedes procesar o imprimir el JSON recibido aquí
     print("Received JSON:", data)
