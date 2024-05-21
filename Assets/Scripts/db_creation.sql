@@ -26,7 +26,7 @@ ALTER TABLE USER ADD FOREIGN KEY (id_sub_champion) REFERENCES COUNTRY(id_country
 
 CREATE TABLE FOOTBALL_MATCH (
     id_match INT PRIMARY KEY AUTO_INCREMENT,
-    date_match DATE NOT NULL,
+    date_match DATETIME NOT NULL,
     id_home_country INT NOT NULL,
     id_away_country INT NOT NULL,
     score_home_country INT NOT NULL,
@@ -85,5 +85,41 @@ CREATE TABLE PRIZE (
 );
 
 
-INSERT INTO STUDENT(name, surname, document)
-    VALUE ("Ionas", "Josponis", "5242903-0");
+#Paises participantes
+INSERT INTO COUNTRY(name) VALUES
+('Argentina'),
+('Bolivia'),
+('Brasil'),
+('Chile'),
+('Colombia'),
+('Ecuador'),
+('Paraguay'),
+('Perú'),
+('Uruguay'),
+('Venezuela'),
+('Estados Unidos'),
+('México'),
+('Canadá'),
+('Costa Rica'),
+('Jamaica'),
+('Panamá');
+
+
+#Usuarios de prueba
+INSERT INTO USER(document, username, name, surname, email, password, total_points, id_champion, id_sub_champion)
+    VALUES
+        ('5242903-0', 'Ionas_Josponis','Ionas', 'Josponis','ionas@gmail.com', '1234', 0, 1, 2),
+        ('4658761-8', 'Lucas_Martino','Lucas', 'Martino','lucas@gmail.com', '1234', 0, 3, 5),
+        ('1234567-8', 'Juan_Nocetti','Juan', 'Nocetti','juan@gmail.com', '1234', 0, 4, 6);
+
+#Partidos de la primera ronda
+INSERT INTO FOOTBALL_MATCH(date_match, id_home_country, id_away_country, score_home_country, score_away_country, id_winner)
+    VALUES
+        ('2024-06-20 21:00', 1, 13, 0, 0, null),
+        ('2024-06-21 21:00', 8, 4, 0, 0, null),
+        ('2024-06-22 19:00', 6, 10, 0, 0, null),
+        ('2024-06-22 22:00', 12, 15, 0, 0, null),
+        ('2024-06-23 19:00', 11, 2, 0, 0, null),
+        ('2024-06-23 22:00', 9, 16, 0, 0, null),
+        ('2024-06-24 19:00', 5, 7, 0, 0, null),
+        ('2024-06-24 22:00', 3, 14, 0, 0, null);
