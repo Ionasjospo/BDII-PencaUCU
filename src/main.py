@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from classes.login import LoginApp
 from classes.register import RegisterApp
+import subprocess
 
 class Main:
     def __init__(self):
@@ -23,5 +24,12 @@ class Main:
         self.root.mainloop()
 
 if __name__ == "__main__":
-    main = Main()
-    main.start()
+    # Iniciar la API en un proceso separado
+    api_process = subprocess.Popen(["python", "src/classes/API.py"])
+
+    # Iniciar la aplicación principal
+    main_app = Main()
+    main_app.start()
+
+    # Terminar el proceso de la API al cerrar la aplicación
+    api_process.terminate()
