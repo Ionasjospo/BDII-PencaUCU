@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import customtkinter as ctk
 import tkinter.messagebox as tkmb
+import requests
 
 
 class RegisterApp:
@@ -28,15 +28,17 @@ class RegisterApp:
         self.password_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Password", show="*")
         self.password_entry.pack(pady=12, padx=10)
 
-        self.champion_label = ctk.CTkLabel(master=self.frame, text="Which country will win the tornament?", cursor="hand2")
+        self.champion_label = ctk.CTkLabel(master=self.frame, text="Which country will win the tournament?")
         self.champion_label.pack(pady=12, padx=10)
-        self.champion_prediction_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Winner")
+        self.champion_prediction_entry = ctk.CTkComboBox(master=self.frame)
         self.champion_prediction_entry.pack(pady=12, padx=10)
 
-        self.second_label = ctk.CTkLabel(master=self.frame, text="And the second place?", cursor="hand2")
+        self.second_label = ctk.CTkLabel(master=self.frame, text="And the second place?")
         self.second_label.pack(pady=12, padx=10)
-        self.second_prediction_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Runner-up")
+        self.second_prediction_entry = ctk.CTkComboBox(master=self.frame)
         self.second_prediction_entry.pack(pady=12, padx=10)
+
+        self.load_countries()
 
         self.register_button = ctk.CTkButton(master=self.frame, text='Register', command=self.register)
         self.register_button.pack(pady=12, padx=10)
@@ -61,6 +63,19 @@ class RegisterApp:
         self.image_label = ctk.CTkLabel(master=self.root, image=photo)
         self.image_label.image = photo  # Keep a reference to avoid garbage collection
         self.image_label.pack(pady=10)
+
+    def load_countries(self):
+        try:
+            response = requests.get("http://localhost:5000/countries")
+            if response.status_code == 200:
+                countries = response.json()
+                country_names = list(countries.keys())
+                self.champion_prediction_entry.configure(values=country_names)
+                self.second_prediction_entry.configure(values=country_names)
+            else:
+                tkmb.showerror("Error", "Failed to load countries")
+        except requests.RequestException as e:
+            tkmb.showerror("Error", f"Failed to load countries: {e}")
 
     def register(self):
         username = self.username_entry.get()
