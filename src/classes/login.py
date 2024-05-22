@@ -1,6 +1,7 @@
 from PIL import Image, ImageTk
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
+import requests
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -61,3 +62,31 @@ class LoginApp:
             tkmb.showwarning(title='Wrong username', message='Please check your username')
         else:
             tkmb.showerror(title="Login Failed", message="Invalid Username and password")
+
+    # def login(self):
+    #     username = self.user_entry.get()
+    #     password = self.user_pass.get()
+
+    #     if not username or not password:
+    #         tkmb.showerror("Error", "Please enter both username and password")
+    #         return
+
+    #     try:
+    #         response = requests.post("http://localhost:5000/login", json={
+    #             "Username": username,
+    #             "Password": password
+    #         })
+
+    #         if response.status_code == 200:
+    #             tkmb.showinfo(title="Login Successful", message="You have logged in successfully")
+    #             new_window = ctk.CTkToplevel(self.root)
+    #             new_window.title("New Window")
+    #             new_window.geometry("350x150")
+    #             ctk.CTkLabel(new_window, text="Welcome to the Penca UCU!").pack()
+    #         elif response.status_code == 401:
+    #             tkmb.showwarning(title='Login Failed', message='Invalid username or password')
+    #         else:
+    #             tkmb.showerror("Error", "Login failed: " + response.json().get('error', 'Unknown error'))
+
+    #     except requests.RequestException as e:
+    #         tkmb.showerror("Error", f"Failed to connect to the server: {e}")
