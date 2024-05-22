@@ -26,14 +26,14 @@ def register():
     user = {
         "Username": data["Username"],
         "Document": data["Document"],
-        "Password": hashed_password,  # Guardar la contraseña hasheada
+        "Password": hashed_password,  
         "Champion_Prediction": data["Champion_Prediction"],
         "Second_Prediction": data["Second_Prediction"]
     }
 
     # Guardar el usuario en la base de datos
-    if not dbmanager.save_user(user):
-        return jsonify({"error": "User already exists or invalid country"}), 409
+    # if not dbmanager.save_user(user):
+    #     return jsonify({"error": "User already exists or invalid country"}), 409
 
     print("Received JSON:", user)
 

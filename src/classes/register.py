@@ -79,6 +79,26 @@ class RegisterApp:
 
     def register(self):
         username = self.username_entry.get()
+        document = self.document_entry.get()
         password = self.password_entry.get()
-        # Aquí puedes agregar la lógica para registrar un nuevo usuario
-        tkmb.showinfo("Register", f"User {username} registered successfully!")
+        champion_prediction = self.champion_prediction_entry.get()
+        second_prediction = self.second_prediction_entry.get()
+
+        if not username or not document or not password or not champion_prediction or not second_prediction:
+            tkmb.showerror("Error", "Please fill in all fields")
+            return
+
+        try:
+            response = requests.post("http://localhost:5000/register", json={
+                "Username": username,
+                "Document": document,
+                "Password": password,
+                "Champion_Prediction": champion_prediction,
+                "Second_Prediction": second_prediction
+            })
+            if response.status_code == 200:
+                tkmb.showinfo("Success", "User registered successfully!")
+            else:
+                tkmb.showerror("Error", f"Failed to register: {response.json().get('error', 'Unknown error')}")
+        except requests.RequestException as e:
+            tkmb.showerror("Error", f"Failed to register: {e}")
