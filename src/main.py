@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     # Iniciar la aplicación principal
     main_app = Main()
-    main_app.start()
+    main_app.start() 
 
     # Terminar el proceso de la API al cerrar la aplicación
     api_process.terminate()
