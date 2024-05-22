@@ -1,0 +1,6 @@
+requests
+customtkinter
+pillow
+mysql-connector-python
+bcrypt
+flask
