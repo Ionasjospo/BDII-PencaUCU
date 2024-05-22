@@ -24,9 +24,15 @@ CREATE TABLE USER (
 ALTER TABLE USER ADD FOREIGN KEY (id_champion) REFERENCES COUNTRY(id_country);
 ALTER TABLE USER ADD FOREIGN KEY (id_sub_champion) REFERENCES COUNTRY(id_country);
 
+CREATE TABLE STAGE (
+    id_stage INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE FOOTBALL_MATCH (
     id_match INT PRIMARY KEY AUTO_INCREMENT,
-    date_match DATETIME NOT NULL,
+    date_match DATE NOT NULL,
+    id_stage INT NOT NULL,
     id_home_country INT NOT NULL,
     id_away_country INT NOT NULL,
     score_home_country INT NOT NULL,
@@ -34,6 +40,7 @@ CREATE TABLE FOOTBALL_MATCH (
     id_winner INT
 );
 
+ALTER TABLE FOOTBALL_MATCH ADD FOREIGN KEY (id_stage) REFERENCES STAGE(id_stage);
 ALTER TABLE FOOTBALL_MATCH ADD FOREIGN KEY (id_home_country) REFERENCES COUNTRY(id_country);
 ALTER TABLE FOOTBALL_MATCH ADD FOREIGN KEY (id_away_country) REFERENCES COUNTRY(id_country);
 ALTER TABLE FOOTBALL_MATCH ADD FOREIGN KEY (id_winner) REFERENCES COUNTRY(id_country);
@@ -112,14 +119,24 @@ INSERT INTO USER(document, username, name, surname, email, password, total_point
         ('4658761-8', 'Lucas_Martino','Lucas', 'Martino','lucas@gmail.com', '1234', 0, 3, 5),
         ('1234567-8', 'Juan_Nocetti','Juan', 'Nocetti','juan@gmail.com', '1234', 0, 4, 6);
 
+#Etapas de la copa
+INSERT INTO STAGE(name) VALUES
+('Primera ronda - Grupos'),
+('Segunda ronda - Grupos'),
+('Tercera Ronda - Grupos'),
+('Cuartos de final'),
+('Semifinales'),
+('Tercer puesto'),
+('Final');
+
 #Partidos de la primera ronda
-INSERT INTO FOOTBALL_MATCH(date_match, id_home_country, id_away_country, score_home_country, score_away_country, id_winner)
+INSERT INTO FOOTBALL_MATCH(date_match, id_stage , id_home_country, id_away_country, score_home_country, score_away_country, id_winner)
     VALUES
-        ('2024-06-20 21:00', 1, 13, 0, 0, null),
-        ('2024-06-21 21:00', 8, 4, 0, 0, null),
-        ('2024-06-22 19:00', 6, 10, 0, 0, null),
-        ('2024-06-22 22:00', 12, 15, 0, 0, null),
-        ('2024-06-23 19:00', 11, 2, 0, 0, null),
-        ('2024-06-23 22:00', 9, 16, 0, 0, null),
-        ('2024-06-24 19:00', 5, 7, 0, 0, null),
-        ('2024-06-24 22:00', 3, 14, 0, 0, null);
+        ('2024-06-20 21:00', 1 ,1, 13, 0, 0, null),
+        ('2024-06-21 21:00', 1, 8, 4, 0, 0, null),
+        ('2024-06-22 19:00', 1, 6, 10, 0, 0, null),
+        ('2024-06-22 22:00', 1, 12, 15, 0, 0, null),
+        ('2024-06-23 19:00', 1, 11, 2, 0, 0, null),
+        ('2024-06-23 22:00', 1, 9, 16, 0, 0, null),
+        ('2024-06-24 19:00', 1, 5, 7, 0, 0, null),
+        ('2024-06-24 22:00', 1, 3, 14, 0, 0, null);
