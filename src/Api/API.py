@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 @app.route('/countries', methods=['GET'])
 def get_countries():
+    print("get_countries")
     countries = dbmanager.get_countries()
     return jsonify(countries), 200
 
@@ -24,16 +25,19 @@ def register():
 
     # Crear el usuario
     user = {
-        "Username": data["Username"],
         "Document": data["Document"],
+        "Username": data["Username"],
+        "Name": data["Name"],
+        "Surname": data["Surname"],
+        "Email": data["Email"],
         "Password": hashed_password,  
         "Champion_Prediction": data["Champion_Prediction"],
         "Second_Prediction": data["Second_Prediction"]
     }
 
     # Guardar el usuario en la base de datos
-    # if not dbmanager.save_user(user):
-    #     return jsonify({"error": "User already exists or invalid country"}), 409
+    if not dbmanager.save_user(user):
+        return jsonify({"error": "User already exists or invalid country"}), 409
 
     print("Received JSON:", user)
 
@@ -54,6 +58,7 @@ def login():
     if user is None:
         return jsonify({"error": "User not found"}), 404
 
+    print("User found", user["Password"])
     # Verificar la contraseña
     if dbmanager.check_password(data["Password"], user["Password"]):
         return jsonify({"message": "Login successful!"}), 200

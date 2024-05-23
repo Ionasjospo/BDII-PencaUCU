@@ -6,9 +6,13 @@ db = DatabaseConnector(host="localhost", port=3307, database="PENCA_UCU", user="
 db.connect()
 
 def save_user(user):
-    username = user["Username"]
     document = user["Document"]
+    username = user["Username"]
+    name = user["Name"]
+    surname = user["Surname"]
+    email = user["Email"]
     password = user["Password"]
+    total_points = 0
     champion_prediction = user["Champion_Prediction"]
     second_prediction = user["Second_Prediction"]
 
@@ -23,10 +27,10 @@ def save_user(user):
         return False  # Uno o ambos países no existen
 
     query = (
-        "INSERT INTO USER (document, username, password, total_points, id_champion, id_sub_champion) "
-        "VALUES (%s, %s, %s, %s, %s, %s)"
+        "INSERT INTO USER (document, username, name, surname, email, password, total_points, id_champion, id_sub_champion) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
     )
-    db.execute_query(query, (document, username, password, 0, id_champion, id_sub_champion))
+    db.execute_query(query, (document, username, name, surname, email, password, total_points, id_champion, id_sub_champion))
     return True
 
 def find_user(username):
@@ -44,8 +48,9 @@ def find_user(username):
     return None
 
 def get_countries():
+    print("get_countries de dbmanager")
     query = "SELECT id_country, name FROM COUNTRY"
-    results = db.fetch_results(query)
+    results = db.fetch_results(query, params=None)
     countries = {row[1]: row[0] for row in results}
     return countries
 
@@ -61,4 +66,5 @@ def hash_password(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 def check_password(password, hashed):
-    return bcrypt.checkpw(password.encode('utf-8'), hashed)
+    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+
