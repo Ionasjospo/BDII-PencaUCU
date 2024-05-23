@@ -11,7 +11,8 @@ class LoginApp:
         self.root = root
         self.switch_to_register = switch_to_register
         self.root.title("Penca UCU")
-        self.root.geometry("500x500")
+        self.root.attributes('-fullscreen', False)
+        self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 
         self.load_image("Assets/Images/ucu_white_logo.png")
 
@@ -41,8 +42,8 @@ class LoginApp:
     def load_image(self, path):
         image = Image.open(path)
         image = image.resize((250, 150), Image.LANCZOS)  # Resize the image
-        photo = ImageTk.PhotoImage(image)
-        self.image_label = ctk.CTkLabel(master=self.root, image=photo)
+        photo = ctk.CTkImage(image, size=(250, 150))
+        self.image_label = ctk.CTkLabel(master=self.root, image=photo, text="")
         self.image_label.image = photo  # Keep a reference to avoid garbage collection
         self.image_label.pack(pady=10)
 

@@ -25,7 +25,7 @@ class Main:
 
 if __name__ == "__main__":
     # Iniciar la API en un proceso separado
-    api_process = subprocess.Popen(["python", "src/classes/API.py"])
+    api_process = subprocess.Popen(["python", "src/Api/API.py"])
 
     # Iniciar la aplicación principal
     main_app = Main()

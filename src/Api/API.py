@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from src.database import dbmanager
+import dbmanager
 
 app = Flask(__name__)
 
