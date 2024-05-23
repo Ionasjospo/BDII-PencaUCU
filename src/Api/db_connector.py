@@ -20,28 +20,34 @@ class DatabaseConnector:
                 password=self.password
             )
             if self.connection.is_connected():
-                print("Conectado a la base de datos")
+                print("Connected to MySQL database")
         except Error as e:
             print(f"Error: {e}")
 
     def close(self):
         if self.connection.is_connected():
             self.connection.close()
-            print("Conexión cerrada")
+            print("Closed connection")
 
-    def execute_query(self, query):
+    def execute_query(self, query, params):
         cursor = self.connection.cursor()
         try:
-            cursor.execute(query)
+            if params is None:
+                cursor.execute(query)
+            else:
+                cursor.execute(query, params)
             self.connection.commit()
-            print("Consulta ejecutada con éxito")
+            print("Query successful executed")
         except Error as e:
             print(f"Error: {e}")
 
-    def fetch_results(self, query):
+    def fetch_results(self, query, params):
         cursor = self.connection.cursor()
         try:
-            cursor.execute(query)
+            if params is None:
+                cursor.execute(query)
+            else:
+                cursor.execute(query, params)
             results = cursor.fetchall()
             return results
         except Error as e:

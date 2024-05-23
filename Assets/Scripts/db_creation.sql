@@ -14,7 +14,7 @@ CREATE TABLE USER (
     name VARCHAR(50) NOT NULL,
     surname VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(60) NOT NULL,
     total_points INT NOT NULL,
     id_champion INT,
     id_sub_champion INT

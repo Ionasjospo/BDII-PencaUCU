@@ -110,3 +110,7 @@ dmypy.json
 
 # Pytest
 .pytest_cache/
+
+# Ignorar archivos compilados específicos
+src/classes/__pycache__/login.cpython-311.pyc
+src/classes/__pycache__/register.cpython-311.pyc

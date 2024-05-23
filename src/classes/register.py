@@ -14,17 +14,26 @@ class RegisterApp:
 
         self.load_image("Assets/Images/ucu_white_logo.png")
 
-        self.frame = ctk.CTkFrame(master=self.root)
+        self.frame = ctk.CTkScrollableFrame(master=self.root)
         self.frame.pack(pady=20, padx=40, fill='both', expand=True)
 
         self.label = ctk.CTkLabel(master=self.frame, text='Register to Penca UCU')
         self.label.pack(pady=12, padx=10)
 
+        self.document_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Document")
+        self.document_entry.pack(pady=12, padx=10)
+
         self.username_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Username")
         self.username_entry.pack(pady=12, padx=10)
 
-        self.document_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Document")
-        self.document_entry.pack(pady=12, padx=10)
+        self.name_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Name")
+        self.name_entry.pack(pady=12, padx=10)
+
+        self.surname_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Surname")
+        self.surname_entry.pack(pady=12, padx=10)
+
+        self.email_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Email")
+        self.email_entry.pack(pady=12, padx=10)
 
         self.password_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Password", show="*")
         self.password_entry.pack(pady=12, padx=10)
@@ -41,21 +50,15 @@ class RegisterApp:
 
         self.load_countries()
 
+
+        # Ver aca si command= self.register es true cambiar a login app
         self.register_button = ctk.CTkButton(master=self.frame, text='Register', command=self.register)
         self.register_button.pack(pady=12, padx=10)
+        
 
         self.login_label = ctk.CTkLabel(master=self.frame, text="Already have an account? Login", cursor="hand2")
         self.login_label.pack(pady=12, padx=10)
         self.login_label.bind("<Button-1>", lambda e: self.switch_to_login())
-
-        # self.scrollbar = ctk.CTkScrollbar(master=self.frame)
-        # self.scrollbar.pack(side='right', fill='y')
-
-        # self.frame_text = ctk.CTkTextbox(master=self.frame, yscrollcommand=self.scrollbar.set)
-        # self.frame_text.pack(pady=12, padx=10, fill='both', expand=True)
-
-        # self.scrollbar.configure(command=self.frame_text.yview)
-
 
     def load_image(self, path):
         image = Image.open(path)
@@ -79,27 +82,35 @@ class RegisterApp:
             tkmb.showerror("Error", f"Failed to load countries: {e}")
 
     def register(self):
-        username = self.username_entry.get()
         document = self.document_entry.get()
+        username = self.username_entry.get()
+        name = self.name_entry.get()
+        surname = self.surname_entry.get()
+        email = self.email_entry.get()
         password = self.password_entry.get()
         champion_prediction = self.champion_prediction_entry.get()
         second_prediction = self.second_prediction_entry.get()
 
-        if not username or not document or not password or not champion_prediction or not second_prediction:
+        if not all([document, username, name, surname, email, password, champion_prediction, second_prediction]):
             tkmb.showerror("Error", "Please fill in all fields")
             return
 
         try:
             response = requests.post("http://localhost:5000/register", json={
-                "Username": username,
                 "Document": document,
+                "Username": username,
+                "Name": name,
+                "Surname": surname,
+                "Email": email,
                 "Password": password,
                 "Champion_Prediction": champion_prediction,
                 "Second_Prediction": second_prediction
             })
             if response.status_code == 200:
                 tkmb.showinfo("Success", "User registered successfully!")
+                return True
             else:
                 tkmb.showerror("Error", f"Failed to register: {response.json().get('error', 'Unknown error')}")
+                return False
         except requests.RequestException as e:
             tkmb.showerror("Error", f"Failed to register: {e}")
