@@ -5,7 +5,6 @@ app = Flask(__name__)
 
 @app.route('/countries', methods=['GET'])
 def get_countries():
-    print("get_countries")
     countries = dbmanager.get_countries()
     return jsonify(countries), 200
 
