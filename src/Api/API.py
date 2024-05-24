@@ -64,5 +64,10 @@ def login():
     else:
         return jsonify({"error": "Invalid user or password"}), 401
 
+@app.route('/football_match', methods=['GET'])
+def get_matchs(group):
+    matchs = dbmanager.get_matchs()
+    return jsonify(matchs), 200
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

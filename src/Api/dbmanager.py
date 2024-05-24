@@ -53,6 +53,20 @@ def get_countries():
     countries = {row[1]: row[0] for row in results}
     return countries
 
+def get_matchs(group):
+    query = "SELECT date_match, home.name, away.name FROM FOOTBALL_MATCH JOIN COUNTRY home on FOOTBALL_MATCH.id_home_country = home.id_country JOIN COUNTRY away on FOOTBALL_MATCH.id_away_country = away.id_country;" 
+    #QUEDE EN VER ESA QUERY Y QUE DEVUELVA EL JSON JOYAMENTE!!
+    results = db.fetch_results(query, (group,))
+    matchs = []
+    for row in results:
+        match = {
+            "Home team": row[0],
+            "Away team": row[1],
+            "Date": row[2]
+        }
+        matchs.append(match)
+    return matchs
+
 
 def get_country_id(country_name):
     query = "SELECT id_country FROM COUNTRY WHERE name = %s"
