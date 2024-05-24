@@ -48,7 +48,6 @@ def find_user(username):
     return None
 
 def get_countries():
-    print("get_countries de dbmanager")
     query = "SELECT id_country, name FROM COUNTRY"
     results = db.fetch_results(query, params=None)
     countries = {row[1]: row[0] for row in results}

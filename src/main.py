@@ -1,16 +1,36 @@
 import customtkinter as ctk
 from classes.login import LoginApp
 from classes.register import RegisterApp
+from classes.fixture import FixtureApp
+from classes.ranking import RankingApp
+from classes.predict import PredictApp
 import subprocess
+from classes.index import IndexApp
 
 class Main:
     def __init__(self):
         self.root = ctk.CTk()
         self.show_login()
 
+    def show_fixture(self, event=None):
+        self.clear_window()
+        self.fixture_app = FixtureApp(self.root, self.show_index)
+
+    def show_ranking(self, event=None):
+        self.clear_window()
+        self.ranking_app = RankingApp(self.root, self.show_index)
+
+    def show_predict(self, event=None):
+        self.clear_window()
+        self.predict_app = PredictApp(self.root, self.show_index)
+       
+    def show_index(self):
+        self.clear_window()
+        self.index_app = IndexApp(self.root, self.show_fixture, self.show_ranking, self.show_predict)
+
     def show_login(self):
         self.clear_window()
-        self.login_app = LoginApp(self.root, self.show_register)
+        self.login_app = LoginApp(self.root, self.show_register, self.show_index)
 
     def show_register(self):
         self.clear_window()

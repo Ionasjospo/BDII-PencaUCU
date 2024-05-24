@@ -7,9 +7,10 @@ ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
 class LoginApp:
-    def __init__(self, root, switch_to_register):
+    def __init__(self, root, switch_to_register, switch_to_index):
         self.root = root
         self.switch_to_register = switch_to_register
+        self.switch_to_index = switch_to_index
         self.root.title("Penca UCU")
         self.root.attributes('-fullscreen', False)
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
@@ -61,11 +62,7 @@ class LoginApp:
                 "Password": password
             })
             if response.status_code == 200:
-                tkmb.showinfo(title="Login Successful", message="You have logged in successfully")
-                # new_window = ctk.CTkToplevel(self.root)
-                # new_window.title("New Window")
-                # new_window.geometry("350x150")
-                # ctk.CTkLabel(new_window, text="Welcome to the Penca UCU!").pack()
+                self.switch_to_index()
             elif response.status_code == 400:
                 tkmb.showwarning(title='Login Failed', message='Missing username or password')
             elif response.status_code == 401 or  response.status_code == 404:
