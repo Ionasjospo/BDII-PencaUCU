@@ -5,10 +5,11 @@ import requests
 
 
 class RegisterApp:
-    def __init__(self, root, switch_to_login, switch_to_index):
+    def __init__(self, root, switch_to_login, switch_to_index, set_username):
         self.root = root
         self.switch_to_login = switch_to_login
         self.switch_to_index = switch_to_index
+        self.set_username = set_username
         self.root.title("Register to Penca UCU")
         self.root.attributes('-fullscreen', False)
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
@@ -109,6 +110,7 @@ class RegisterApp:
             })
             if response.status_code == 200:
                 tkmb.showinfo("Success", "User registered successfully!")
+                self.set_username(username)
                 self.switch_to_index()
                 return True
             else:

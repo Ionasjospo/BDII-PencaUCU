@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import dbmanager
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -64,18 +65,47 @@ def login():
     else:
         return jsonify({"error": "Invalid user or password"}), 401
 
-@app.route('/matches', methods=['POST'])
+@app.route('/matches', methods=['GET'])
 def matches():
-    data = request.json
-
-    if "group" not in data:
-        return jsonify({"error": "Missing group"}), 400
+    group = request.args.get('group')
+    show_predictable = request.args.get('predictable', False)
     
-    matches = dbmanager.matches(data["group"])
+    if group:
+        matches = dbmanager.matches(group)
+    else:
+        matches = dbmanager.all_matches()
+    
+    if show_predictable:
+        now = datetime.now()
+        filtered_matches = []
+        for match in matches:
+            if isinstance(match['Date'], str):
+                match_datetime = datetime.strptime(match['Date'], "%a, %d %b %Y %H:%M:%S")
+            else:
+                match_datetime = match['Date']
+            if match_datetime > now + timedelta(minutes=30):
+                filtered_matches.append(match)
+        matches = filtered_matches
+
     if matches:
         return jsonify(matches), 200
     else:
         return jsonify({"error": "No matches found"}), 404
+    
+@app.route('/predictions', methods=['POST'])
+def submit_predictions():
+    data = request.get_json()
+    username = data.get('username')
+    predictions = data.get('predictions')
+
+    if not username or not predictions:
+        return jsonify({"error": "Invalid input"}), 400
+
+    success = dbmanager.insert_predictions(username, predictions)
+    if success:
+        return jsonify({"message": "Predictions submitted successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to submit predictions"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

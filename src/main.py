@@ -11,7 +11,11 @@ from classes.index import IndexApp
 class Main:
     def __init__(self):
         self.root = ctk.CTk()
+        self.username = None
         self.show_login()
+
+    def set_username(self, username):
+        self.username = username
 
     def show_fixture(self, event=None):
         self.clear_window()
@@ -23,7 +27,10 @@ class Main:
 
     def show_predict(self, event=None):
         self.clear_window()
-        self.predict_app = PredictApp(self.root, self.show_index)
+        if self.username:
+            self.predict_app = PredictApp(self.root, self.show_index, self.username)
+        else:
+            self.show_login()
        
     def show_index(self):
         self.clear_window()
@@ -31,11 +38,11 @@ class Main:
 
     def show_login(self):
         self.clear_window()
-        self.login_app = LoginApp(self.root, self.show_register, self.show_index)
+        self.login_app = LoginApp(self.root, self.show_register, self.show_index, self.set_username)
 
     def show_register(self):
         self.clear_window()
-        self.register_app = RegisterApp(self.root, self.show_login, self.show_index)
+        self.register_app = RegisterApp(self.root, self.show_login, self.show_index, self.set_username)
 
     def clear_window(self):
         for widget in self.root.winfo_children():
