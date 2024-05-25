@@ -2,6 +2,7 @@ from PIL import Image, ImageTk
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
 import requests
+import datetime
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -55,35 +56,45 @@ class FixtureApp:
         table_frame = ctk.CTkFrame(master=self.frame)
         table_frame.pack(pady=12, padx=10)
 
-        headers = ["Home team", "Away team", "Date"]
+        headers = ["Date", "Home team", "Away team"]
+
         for col, header in enumerate(headers):
             label = ctk.CTkLabel(master=table_frame, text=header, font=("Arial", 14, "bold"))
             label.grid(row=0, column=col, padx=5, pady=5)
 
-        data = []
-
         if group == "A":
-            data = [
-                ["Uruguay", "Argentina", "3/12/24 21:00"],
-                ["Bolivia", "Brasil", "2/3/24 21:09"]
-            ]
+            data = self.matches(group)
         elif group == "B":
-            data = [
-                ["Peru", "Chile", "3/12/24 21:00"],
-                ["Paraguay", "Ecuador", "2/3/24 21:09"]
-            ]
+            data =  self.matches(group)
         else:
-            data = [
-                ["Venezuela", "Colombia", "3/12/24 21:00"],
-                ["Qatar", "Australia", "2/3/24 21:09"]
-            ]
+            data =  self.matches(group)     
         
         
+        formatted_data = [
+            [datetime.datetime.strptime(match['Date'], "%a, %d %b %Y %H:%M:%S %Z").strftime("%d/%m/%Y %H:%M:%S"), 
+            match['Home team'], 
+            match['Away team']] 
+            for match in data]
 
-        for row, entry in enumerate(data, start=1):
-            for col, item in enumerate(entry):
-                label = ctk.CTkLabel(master=table_frame, text=item)
-                label.grid(row=row, column=col, padx=5, pady=5)
-        
+        if formatted_data is not None:
+            for row, entry in enumerate(formatted_data, start=1):
+                for col, item in enumerate(entry):
+                    label = ctk.CTkLabel(master=table_frame, text=item)
+                    label.grid(row=row, column=col, padx=5, pady=5)
+    
+
+    def matches(self, group):
+        try:
+            response = requests.post("http://localhost:5000/matches", json={
+                "group": group,
+                "group": group,
+                })
+            if response.status_code == 200:
+                matches = response.json()
+                return matches
+            else:
+                tkmb.showerror("Error", "Failed to load matches")
+        except requests.RequestException as e:
+            tkmb.showerror("Error", f"Failed to load matches: {e}")
 
     
