@@ -53,6 +53,27 @@ def get_countries():
     countries = {row[1]: row[0] for row in results}
     return countries
 
+def matches(group):
+    # In the first stages, the same countries group plays against each other
+    group2 = group
+    query = (
+        "SELECT date_match, home.name, away.name "
+        "FROM FOOTBALL_MATCH "
+        "JOIN COUNTRY home ON FOOTBALL_MATCH.id_home_country = home.id_country "
+        "JOIN COUNTRY away ON FOOTBALL_MATCH.id_away_country = away.id_country "
+        "WHERE home.cup_group = %s AND away.cup_group = %s"
+    )
+    results = db.fetch_results(query, (group,group2))
+    matches = []
+    for row in results:
+        match = {
+            "Date": row[0],
+            "Home team": row[1],
+            "Away team": row[2]
+        }
+        matches.append(match)
+    return matches
+
 
 def get_country_id(country_name):
     query = "SELECT id_country FROM COUNTRY WHERE name = %s"

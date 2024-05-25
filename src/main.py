@@ -7,6 +7,7 @@ from classes.predict import PredictApp
 import subprocess
 from classes.index import IndexApp
 
+
 class Main:
     def __init__(self):
         self.root = ctk.CTk()
@@ -34,7 +35,7 @@ class Main:
 
     def show_register(self):
         self.clear_window()
-        self.register_app = RegisterApp(self.root, self.show_login)
+        self.register_app = RegisterApp(self.root, self.show_login, self.show_index)
 
     def clear_window(self):
         for widget in self.root.winfo_children():

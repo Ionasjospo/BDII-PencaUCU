@@ -64,5 +64,18 @@ def login():
     else:
         return jsonify({"error": "Invalid user or password"}), 401
 
+@app.route('/matches', methods=['POST'])
+def matches():
+    data = request.json
+
+    if "group" not in data:
+        return jsonify({"error": "Missing group"}), 400
+    
+    matches = dbmanager.matches(data["group"])
+    if matches:
+        return jsonify(matches), 200
+    else:
+        return jsonify({"error": "No matches found"}), 404
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
