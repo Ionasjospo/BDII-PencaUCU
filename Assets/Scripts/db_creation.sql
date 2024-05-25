@@ -54,7 +54,7 @@ CREATE TABLE PREDICTION (
     id_away_country INT NOT NULL,
     score_home_country INT NOT NULL,
     score_away_country INT NOT NULL,
-    points INT NOT NULL,
+    points INT,
     PRIMARY KEY (id_user, id_match)
 );
 

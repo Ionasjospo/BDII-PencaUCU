@@ -1,7 +1,5 @@
 from PIL import Image, ImageTk
 import customtkinter as ctk
-import tkinter.messagebox as tkmb
-import requests
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -19,29 +17,32 @@ class IndexApp:
 
         self.load_image("Assets/Images/ucu_white_logo.png")
 
-        ctk.CTkLabel(self.root, text="Welcome to the fuckin penca bro").pack()
+        ctk.CTkLabel(self.root, text="Welcome to the fuckin penca bro", font=("Arial", 18)).pack(pady=10)
 
         # Crear un frame para contener los botones
         self.button_frame = ctk.CTkFrame(master=self.root)
         self.button_frame.pack(pady=20, padx=40, fill='both', expand=True)
 
-        # Crear botones grandes y cuadrados
-        self.create_button("Fixture", self.button_frame)
-        self.create_button("Ranking", self.button_frame)
-        self.create_button("Predict", self.button_frame)
-
+        # Crear botones grandes y cuadrados con iconos
+        self.create_button("Fixture", self.button_frame, "Assets/Images/Icons/fixture.png")
+        self.create_button("Ranking", self.button_frame, "Assets/Images/Icons/ranking.png")
+        self.create_button("Predict", self.button_frame, "Assets/Images/Icons/prediction.png")
 
     def load_image(self, path):
         image = Image.open(path)
-        image = image.resize((250, 150), Image.LANCZOS)  # Resize the image
+        image = image.resize((200, 100), Image.LANCZOS)  # Resize the image
         photo = ctk.CTkImage(image, size=(250, 150))
         self.image_label = ctk.CTkLabel(master=self.root, image=photo, text="")
         self.image_label.image = photo  # Keep a reference to avoid garbage collection
         self.image_label.pack(pady=10)
 
-    def create_button(self, text, parent_frame):
+    def create_button(self, text, parent_frame, icon_path):
         button_size = 350  # Tamaño del botón para hacerlo grande y cuadrado
-        button = ctk.CTkButton(master=parent_frame, text=text, width=button_size, height=button_size)
+        icon = Image.open(icon_path)
+        icon = icon.resize((100, 100), Image.LANCZOS)  # Aumentar el tamaño del icono
+        icon_photo = ctk.CTkImage(light_image=icon, size=(100, 100))
+
+        button = ctk.CTkButton(master=parent_frame, text=text, width=button_size, height=button_size, image=icon_photo, compound="top")
         button.pack(pady=20, padx=20, side=ctk.LEFT, expand=True)
 
         if text == "Fixture":
@@ -50,7 +51,3 @@ class IndexApp:
             button.bind("<Button-1>", self.show_ranking)
         else:
             button.bind("<Button-1>", self.show_predict)
-
-        
-
-       

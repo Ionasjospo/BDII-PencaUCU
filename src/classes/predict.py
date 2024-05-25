@@ -20,25 +20,29 @@ class PredictApp:
 
         ctk.CTkLabel(self.root, text="Predict Matches").pack()
 
+        button_frame = ctk.CTkFrame(master=self.root)
+        button_frame.pack(pady=12, padx=10)
+
+        self.submit_button = ctk.CTkButton(master=button_frame, text="Submit Predictions", command=self.submit_predictions)
+        self.submit_button.pack(side='left', padx=10)
+
+        self.back_button = ctk.CTkButton(master=button_frame, text="Back to Index", command=self.show_index)
+        self.back_button.pack(side='left', padx=10)
+
         self.frame = ctk.CTkScrollableFrame(master=self.root)
         self.frame.pack(pady=20, padx=40, fill='both', expand=True)
 
         self.fetch_and_display_matches()
 
-        self.submit_button = ctk.CTkButton(master=self.frame, text="Submit Predictions", command=self.submit_predictions)
-        self.submit_button.pack(pady=12, padx=10)
-
     def load_image(self, path):
         image = Image.open(path)
         image = image.resize((250, 150), Image.LANCZOS)
-        photo = ctk.CTkImage(image, size=(200, 100))
-        self.image_label = ctk.CTkLabel(master=self.root, image=photo, text="")
-        self.image_label.image = photo
+        self.photo = ctk.CTkImage(light_image=image, size=(200, 100))
+        self.image_label = ctk.CTkLabel(master=self.root, image=self.photo, text="")
         self.image_label.pack(pady=10)
 
     def fetch_and_display_matches(self):
-        # Fetch matches from API
-        response = requests.get('http://localhost:5000/matches?predictable=true')
+        response = requests.get(f'http://localhost:5000/matches?predictable=true&username={self.username}')
         if response.status_code == 200:
             matches = response.json()
             self.create_match_inputs(matches)
@@ -82,14 +86,16 @@ class PredictApp:
 
                 home_score_entry = ctk.CTkEntry(master=match_inner_frame, width=50)
                 home_score_entry.pack(side='left', padx=5)
-                home_score_entry.insert(0, "0")
+                if 'home_score' in match and match['home_score'] is not None:
+                    home_score_entry.insert(0, str(match['home_score']))
 
                 match_label = ctk.CTkLabel(master=match_inner_frame, text=f"] Vs [")
                 match_label.pack(side='left')
 
                 away_score_entry = ctk.CTkEntry(master=match_inner_frame, width=50)
                 away_score_entry.pack(side='left', padx=5)
-                away_score_entry.insert(0, "0")
+                if 'away_score' in match and match['away_score'] is not None:
+                    away_score_entry.insert(0, str(match['away_score']))
 
                 match_label = ctk.CTkLabel(master=match_inner_frame, text=f"] {match['Away team']}")
                 match_label.pack(side='left')
@@ -98,14 +104,16 @@ class PredictApp:
                 away_flag_label = ctk.CTkLabel(master=match_inner_frame, image=away_flag, text="")
                 away_flag_label.pack(side='left', padx=5)
 
-                self.predictions[match['id_match']] = (home_score_entry, away_score_entry)
+                id_home_country = match.get('id_home_country', None)
+                id_away_country = match.get('id_away_country', None)
+                self.predictions[match['id_match']] = (home_score_entry, away_score_entry, id_home_country, id_away_country)
 
     def load_flag_image(self, country_name):
         flag_path = f"Assets/Images/Flags/Flag_of_{country_name}.png"
         if os.path.exists(flag_path):
             flag_image = Image.open(flag_path)
             flag_image = flag_image.resize((30, 20), Image.LANCZOS)
-            return ctk.CTkImage(flag_image)
+            return ctk.CTkImage(light_image=flag_image, size=(30, 20))
         else:
             print(f"Bandera no encontrada para: {country_name}")
             return None
@@ -116,16 +124,27 @@ class PredictApp:
             "predictions": []
         }
 
-        for match_id, (home_score_entry, away_score_entry) in self.predictions.items():
-            prediction_data["predictions"].append({
-                "match_id": match_id,
-                "home_score": home_score_entry.get(),
-                "away_score": away_score_entry.get()
-            })
+        for match_id, (home_score_entry, away_score_entry, id_home_country, id_away_country) in self.predictions.items():
+            try:
+                home_score = int(home_score_entry.get())
+                away_score = int(away_score_entry.get())
+                if home_score >= 0 and away_score >= 0 and id_home_country is not None and id_away_country is not None:
+                    prediction_data["predictions"].append({
+                        "id_match": match_id,
+                        "home_score": home_score,
+                        "away_score": away_score,
+                        "id_home_country": id_home_country,
+                        "id_away_country": id_away_country
+                    })
+            except ValueError:
+                # Ignore entries that are not valid integers
+                continue
 
-        response = requests.post('http://localhost:5000/predictions', json=prediction_data)
-        if response.status_code == 200:
-            tkmb.showinfo("Success", "Predictions submitted successfully")
+        if prediction_data["predictions"]:
+            response = requests.post('http://localhost:5000/predictions', json=prediction_data)
+            if response.status_code == 200:
+                tkmb.showinfo("Success", "Predictions submitted successfully")
+            else:
+                tkmb.showerror("Error", "Failed to submit predictions")
         else:
-            tkmb.showerror("Error", "Failed to submit predictions")
-
+            tkmb.showwarning("Warning", "No valid predictions to submit")
