@@ -85,10 +85,7 @@ class FixtureApp:
 
     def matches(self, group):
         try:
-            response = requests.post("http://localhost:5000/matches", json={
-                "group": group,
-                "group": group,
-                })
+            response = requests.get(f"http://localhost:5000/matches?group={group}")
             if response.status_code == 200:
                 matches = response.json()
                 return matches

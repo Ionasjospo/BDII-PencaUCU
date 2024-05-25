@@ -74,6 +74,42 @@ def matches(group):
         matches.append(match)
     return matches
 
+def all_matches():
+    query = (
+        "SELECT id_match, date_match, home.name, away.name "
+        "FROM FOOTBALL_MATCH "
+        "JOIN COUNTRY home ON FOOTBALL_MATCH.id_home_country = home.id_country "
+        "JOIN COUNTRY away ON FOOTBALL_MATCH.id_away_country = away.id_country"
+    )
+    results = db.fetch_results(query, None)
+    matches = []
+    for row in results:
+        match = {
+            "id_match": row[0],
+            "Date": row[1],
+            "Home team": row[2],
+            "Away team": row[3]
+        }
+        matches.append(match)
+    return matches
+
+def insert_predictions(username, predictions):
+    try:
+        for prediction in predictions:
+            id_match = prediction['id_match']
+            home_score = prediction['home_score']
+            away_score = prediction['away_score']
+            query = """
+                INSERT INTO PREDICTIONS (username, id_match, home_score, away_score)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE home_score = %s, away_score = %s
+            """
+            db.execute_query(query, (username, id_match, home_score, away_score, home_score, away_score))
+        return True
+    except Exception as e:
+        print(f"Error inserting predictions: {e}")
+        return False
+
 
 def get_country_id(country_name):
     query = "SELECT id_country FROM COUNTRY WHERE name = %s"
