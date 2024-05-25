@@ -47,6 +47,13 @@ def find_user(username):
         return user
     return None
 
+def get_user_id(username):
+    query = "SELECT id_student FROM USER WHERE username = %s"
+    results = db.fetch_results(query, (username,))
+    if results:
+        return results[0][0]
+    return None
+
 def get_countries():
     query = "SELECT id_country, name FROM COUNTRY"
     results = db.fetch_results(query, params=None)
@@ -75,12 +82,12 @@ def matches(group):
     return matches
 
 def all_matches():
-    query = (
-        "SELECT id_match, date_match, home.name, away.name "
-        "FROM FOOTBALL_MATCH "
-        "JOIN COUNTRY home ON FOOTBALL_MATCH.id_home_country = home.id_country "
-        "JOIN COUNTRY away ON FOOTBALL_MATCH.id_away_country = away.id_country"
-    )
+    query = """
+        SELECT id_match, date_match, home.name AS home_team, away.name AS away_team, home.id_country AS id_home_country, away.id_country AS id_away_country
+        FROM FOOTBALL_MATCH
+        JOIN COUNTRY home ON FOOTBALL_MATCH.id_home_country = home.id_country
+        JOIN COUNTRY away ON FOOTBALL_MATCH.id_away_country = away.id_country
+    """
     results = db.fetch_results(query, None)
     matches = []
     for row in results:
@@ -88,27 +95,61 @@ def all_matches():
             "id_match": row[0],
             "Date": row[1],
             "Home team": row[2],
-            "Away team": row[3]
+            "Away team": row[3],
+            "id_home_country": row[4],
+            "id_away_country": row[5]
         }
         matches.append(match)
     return matches
 
+
+def get_user_predictions(username):
+    id_user = get_user_id(username)
+    if id_user is None:
+        return []
+
+    query = """
+        SELECT id_match, score_home_country, score_away_country, id_home_country, id_away_country
+        FROM PREDICTION
+        WHERE id_user = %s
+    """
+    results = db.fetch_results(query, (id_user,))
+    predictions = []
+    for row in results:
+        predictions.append({
+            "id_match": row[0],
+            "home_score": row[1],
+            "away_score": row[2],
+            "id_home_country": row[3],
+            "id_away_country": row[4]
+        })
+    return predictions
+
 def insert_predictions(username, predictions):
     try:
+        id_user = get_user_id(username)
+        if id_user is None:
+            print(f"User ID not found for username: {username}")
+            return False
+        
         for prediction in predictions:
             id_match = prediction['id_match']
             home_score = prediction['home_score']
             away_score = prediction['away_score']
+            id_home_country = prediction['id_home_country']
+            id_away_country = prediction['id_away_country']
             query = """
-                INSERT INTO PREDICTIONS (username, id_match, home_score, away_score)
-                VALUES (%s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE home_score = %s, away_score = %s
+                INSERT INTO PREDICTION (id_user, id_match, id_home_country, id_away_country, score_home_country, score_away_country)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE score_home_country = %s, score_away_country = %s
             """
-            db.execute_query(query, (username, id_match, home_score, away_score, home_score, away_score))
+            db.execute_query(query, (id_user, id_match, id_home_country, id_away_country, home_score, away_score, home_score, away_score))
         return True
     except Exception as e:
         print(f"Error inserting predictions: {e}")
         return False
+
+
 
 
 def get_country_id(country_name):

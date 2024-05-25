@@ -69,6 +69,7 @@ def login():
 def matches():
     group = request.args.get('group')
     show_predictable = request.args.get('predictable', False)
+    username = request.args.get('username')
     
     if group:
         matches = dbmanager.matches(group)
@@ -86,11 +87,23 @@ def matches():
             if match_datetime > now + timedelta(minutes=30):
                 filtered_matches.append(match)
         matches = filtered_matches
+    
+    if username:
+        predictions = dbmanager.get_user_predictions(username)
+        for match in matches:
+            match['home_score'] = None
+            match['away_score'] = None
+            for prediction in predictions:
+                if match['id_match'] == prediction['id_match']:
+                    match['home_score'] = prediction['home_score']
+                    match['away_score'] = prediction['away_score']
+                    break
 
     if matches:
         return jsonify(matches), 200
     else:
         return jsonify({"error": "No matches found"}), 404
+
     
 @app.route('/predictions', methods=['POST'])
 def submit_predictions():
