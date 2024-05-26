@@ -21,32 +21,50 @@ class LoginApp:
         self.frame = ctk.CTkFrame(master=self.root)
         self.frame.pack(pady=20, padx=40, fill='both', expand=True)
 
-        self.label = ctk.CTkLabel(master=self.frame, text='Welcome to the penca of the copa america 2024')
-        self.label.pack(pady=12, padx=10)
+        self.create_login_fields()
 
-        self.user_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Username")
-        self.user_entry.pack(pady=12, padx=10)
+    def create_login_fields(self):
+        fields_frame = ctk.CTkFrame(master=self.frame)
+        fields_frame.pack(pady=12, padx=10)
 
-        self.user_pass = ctk.CTkEntry(master=self.frame, placeholder_text="Password", show="*")
-        self.user_pass.pack(pady=12, padx=10)
+        welcome_label = ctk.CTkLabel(master=fields_frame, text='Welcome to the penca of the copa america 2024', font=("Arial", 18))
+        welcome_label.grid(row=0, columnspan=2, pady=12, padx=10)
 
-        self.login_button = ctk.CTkButton(master=self.frame, text='Login', command=self.login)
-        self.login_button.pack(pady=12, padx=10)
+        username_icon = Image.open("Assets/Images/Icons/username.png")
+        username_icon = username_icon.resize((20, 20), Image.LANCZOS)
+        username_icon = ctk.CTkImage(username_icon, size=(20, 20))
 
-        # self.checkbox = ctk.CTkCheckBox(master=self.frame, text='Remember Me')
-        # self.checkbox.pack(pady=12, padx=10)
+        password_icon = Image.open("Assets/Images/Icons/password.png")
+        password_icon = password_icon.resize((20, 20), Image.LANCZOS)
+        password_icon = ctk.CTkImage(password_icon, size=(20, 20))
 
-        # Cambiar fg a text_color
-        self.register_label = ctk.CTkLabel(master=self.frame, text="Don't have an account? Register", text_color="blue", cursor="hand2")
-        self.register_label.pack(pady=12, padx=10)
+        username_label = ctk.CTkLabel(master=fields_frame, image=username_icon, text="")
+        username_label.image = username_icon
+        username_label.grid(row=1, column=0, padx=10, pady=5)
+
+        self.user_entry = ctk.CTkEntry(master=fields_frame, placeholder_text="Username", width=300, height=40, corner_radius=10)
+        self.user_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        password_label = ctk.CTkLabel(master=fields_frame, image=password_icon, text="")
+        password_label.image = password_icon
+        password_label.grid(row=2, column=0, padx=10, pady=5)
+
+        self.user_pass = ctk.CTkEntry(master=fields_frame, placeholder_text="Password", show="*", width=300, height=40, corner_radius=10)
+        self.user_pass.grid(row=2, column=1, padx=10, pady=5)
+
+        self.login_button = ctk.CTkButton(master=fields_frame, text='Login', command=self.login, width=300, height=40, corner_radius=10)
+        self.login_button.grid(row=3, columnspan=2, pady=12, padx=10)
+
+        self.register_label = ctk.CTkLabel(master=fields_frame, text="Don't have an account? Register", text_color="white", cursor="hand2")
+        self.register_label.grid(row=4, columnspan=2, pady=12, padx=10)
         self.register_label.bind("<Button-1>", lambda e: self.switch_to_register())
 
     def load_image(self, path):
         image = Image.open(path)
-        image = image.resize((250, 150), Image.LANCZOS)  # Resize the image
+        image = image.resize((250, 150), Image.LANCZOS)
         photo = ctk.CTkImage(image, size=(250, 150))
         self.image_label = ctk.CTkLabel(master=self.root, image=photo, text="")
-        self.image_label.image = photo  # Keep a reference to avoid garbage collection
+        self.image_label.image = photo
         self.image_label.pack(pady=10)
 
     def login(self):
