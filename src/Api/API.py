@@ -142,6 +142,8 @@ def submit_matches():
 
     success = dbmanager.insert_matches(matches_updated)
     if success:
+        dbmanager.update_predictions_points()
+        dbmanager.update_user_points()
         return jsonify({"message": "Predictions submitted successfully"}), 200
     else:
         return jsonify({"error": "Failed to submit predictions"}), 500
