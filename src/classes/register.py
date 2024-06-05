@@ -5,10 +5,11 @@ import requests
 import re
 
 class RegisterApp:
-    def __init__(self, root, switch_to_login, switch_to_index, set_username):
+    def __init__(self, root, switch_to_login, switch_to_index, set_username, switch_to_admin_page):
         self.root = root
         self.switch_to_login = switch_to_login
         self.switch_to_index = switch_to_index
+        self.switch_to_admin_page = switch_to_admin_page    
         self.set_username = set_username
         self.root.title("Register to Penca UCU")
         self.root.attributes('-fullscreen', False)
@@ -120,7 +121,10 @@ class RegisterApp:
             if response.status_code == 200:
                 tkmb.showinfo("Success", "User registered successfully!")
                 self.set_username(username)
-                self.switch_to_index()
+                if username == "admin":
+                    self.switch_to_admin_page()
+                else:
+                    self.switch_to_index()
                 return True
             else:
                 tkmb.showerror("Error", f"Failed to register: {response.json().get('error', 'Unknown error')}")

@@ -148,6 +148,28 @@ def insert_predictions(username, predictions):
     except Exception as e:
         print(f"Error inserting predictions: {e}")
         return False
+    
+def insert_matches(matches_updated_data):
+    try:
+        for match in matches_updated_data:
+            if match:                  
+                id_match = match['id_match']
+                home_score = match['home_score']
+                away_score = match['away_score']
+                
+                query = """
+                    UPDATE FOOTBALL_MATCH
+                    SET score_home_country = %s,
+                    score_away_country = %s
+                    WHERE id_match = %s;
+                    """
+                db.execute_query(query, (home_score, away_score, id_match))
+            else:
+                print(f"Match data is not completed: {match}")
+        return True
+    except Exception as e:
+        print(f"Error inserting the match results: {e}")
+        return False
 
 
 

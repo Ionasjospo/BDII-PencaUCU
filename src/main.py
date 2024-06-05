@@ -4,6 +4,7 @@ from classes.register import RegisterApp
 from classes.fixture import FixtureApp
 from classes.ranking import RankingApp
 from classes.predict import PredictApp
+from classes.admin_page import AdminPageApp
 import subprocess
 from classes.index import IndexApp
 
@@ -38,11 +39,15 @@ class Main:
 
     def show_login(self):
         self.clear_window()
-        self.login_app = LoginApp(self.root, self.show_register, self.show_index, self.set_username)
+        self.login_app = LoginApp(self.root, self.show_register, self.show_index, self.set_username, self.show_admin_page)
+
+    def show_admin_page(self):
+        self.clear_window()
+        self.admin_app = AdminPageApp(self.root)
 
     def show_register(self):
         self.clear_window()
-        self.register_app = RegisterApp(self.root, self.show_login, self.show_index, self.set_username)
+        self.register_app = RegisterApp(self.root, self.show_login, self.show_index, self.set_username, self.show_admin_page)
 
     def clear_window(self):
         for widget in self.root.winfo_children():
