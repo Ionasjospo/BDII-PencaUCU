@@ -171,8 +171,68 @@ def insert_matches(matches_updated_data):
         print(f"Error inserting the match results: {e}")
         return False
 
+def update_predictions_points():
+    try:
+        exact_results_query = """
+                    WITH exact_result AS (
+                        SELECT P.id_user, P.id_match
+                        FROM FOOTBALL_MATCH FM
+                        INNER JOIN PREDICTION P ON FM.id_match = P.id_match
+                        WHERE FM.score_home_country = P.score_home_country
+                        AND FM.score_away_country = P.score_away_country
+                    )
+                    UPDATE PREDICTION
+                    SET points = 4
+                    WHERE (id_user, id_match) IN (
+                        SELECT id_user, id_match
+                        FROM exact_result
+                    );
+                """
+        db.execute_query(exact_results_query, None)
 
+        winners_query = """
+                    WITH winner_result AS (
+                        SELECT
+                            P.id_user,
+                            P.id_match
+                        FROM FOOTBALL_MATCH FM
+                        INNER JOIN PREDICTION P ON FM.id_match = P.id_match
+                        WHERE FM.id_winner = CASE
+                                                WHEN P.score_home_country > P.score_away_country THEN P.id_home_country
+                                                WHEN P.score_home_country < P.score_away_country THEN P.id_away_country
+                                            END
+                    )
+                    UPDATE PREDICTION
+                    SET points = 2
+                    WHERE (id_user, id_match) IN (
+                        SELECT id_user, id_match
+                        FROM winner_result
+                    );
+                """
+        db.execute_query(winners_query, None)
+        return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
 
+def update_user_points():
+    try:
+        query = """
+                WITH Total_points AS (
+                    SELECT id_user, SUM(points) as Total_Points
+                    FROM PREDICTION
+                    WHERE points IS NOT NULL
+                    GROUP BY id_user
+                )
+                UPDATE USER
+                SET total_points = (SELECT Total_Points FROM Total_points WHERE Total_points.id_user = USER.id_student)
+                WHERE id_student IN (SELECT id_user FROM Total_points);
+            """
+        db.execute_query(query, None)
+        return True
+    except Exception as e:
+            print(f"Error: {e}")
+            return False
 
 def get_country_id(country_name):
     query = "SELECT id_country FROM COUNTRY WHERE name = %s"
