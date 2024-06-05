@@ -187,3 +187,16 @@ def hash_password(password):
 def check_password(password, hashed):
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
+def getRanking():
+    query = "SELECT username, total_points FROM USER ORDER BY total_points DESC"
+    results = db.fetch_results(query, None)
+    ranking = []
+    for row in results:
+        rank= {
+            "Username": row[0],
+            "Total Points": row[1]
+        }
+        ranking.append(rank)
+    return ranking
+
+

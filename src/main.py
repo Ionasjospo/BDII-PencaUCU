@@ -24,7 +24,7 @@ class Main:
 
     def show_ranking(self, event=None):
         self.clear_window()
-        self.ranking_app = RankingApp(self.root, self.show_index)
+        self.ranking_app = RankingApp(self.root, self.show_index, self.username)
 
     def show_predict(self, event=None):
         self.clear_window()

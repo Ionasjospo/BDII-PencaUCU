@@ -145,6 +145,15 @@ def submit_matches():
         return jsonify({"message": "Predictions submitted successfully"}), 200
     else:
         return jsonify({"error": "Failed to submit predictions"}), 500
+    
+@app.route('/ranking', methods=['GET'])
+def ranking():
+    ranking = dbmanager.getRanking()
+    if ranking:
+        return jsonify(ranking), 200
+    else:
+        return jsonify({"error": "No ranking found"}), 500
+        
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
