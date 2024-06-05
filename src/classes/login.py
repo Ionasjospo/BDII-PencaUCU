@@ -7,10 +7,11 @@ ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
 class LoginApp:
-    def __init__(self, root, switch_to_register, switch_to_index, set_username):
+    def __init__(self, root, switch_to_register, switch_to_index, set_username, switch_to_admin_page):
         self.root = root
         self.switch_to_register = switch_to_register
         self.switch_to_index = switch_to_index
+        self.switch_to_admin_page = switch_to_admin_page
         self.set_username = set_username
         self.root.title("Penca UCU")
         self.root.attributes('-fullscreen', False)
@@ -82,7 +83,10 @@ class LoginApp:
             })
             if response.status_code == 200:
                 self.set_username(username)
-                self.switch_to_index()
+                if username == "admin":
+                    self.switch_to_admin_page()
+                else:
+                    self.switch_to_index()
             elif response.status_code == 400:
                 tkmb.showwarning(title='Login Failed', message='Missing username or password')
             elif response.status_code == 401 or  response.status_code == 404:

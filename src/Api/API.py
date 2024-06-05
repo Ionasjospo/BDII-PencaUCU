@@ -89,15 +89,27 @@ def matches():
         matches = filtered_matches
     
     if username:
-        predictions = dbmanager.get_user_predictions(username)
-        for match in matches:
-            match['home_score'] = None
-            match['away_score'] = None
-            for prediction in predictions:
-                if match['id_match'] == prediction['id_match']:
-                    match['home_score'] = prediction['home_score']
-                    match['away_score'] = prediction['away_score']
-                    break
+        if username == "admin":
+            # Admin doesnt have old preditctions
+            for match in matches: 
+                if isinstance(match['Date'], str):
+                    match_datetime = datetime.strptime(match['Date'], "%a, %d %b %Y %H:%M:%S")
+                else:
+                    match_datetime = match['Date']
+                # If the match already happened    
+                if match_datetime < now:
+                    filtered_matches.append(match)
+            matches = filtered_matches      
+        else:
+            predictions = dbmanager.get_user_predictions(username)
+            for match in matches:
+                match['home_score'] = None
+                match['away_score'] = None
+                for prediction in predictions:
+                    if match['id_match'] == prediction['id_match']:
+                        match['home_score'] = prediction['home_score']
+                        match['away_score'] = prediction['away_score']
+                        break
 
     if matches:
         return jsonify(matches), 200
@@ -115,6 +127,20 @@ def submit_predictions():
         return jsonify({"error": "Invalid input"}), 400
 
     success = dbmanager.insert_predictions(username, predictions)
+    if success:
+        return jsonify({"message": "Predictions submitted successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to submit predictions"}), 500
+    
+@app.route('/submit_matches', methods=['POST'])
+def submit_matches():
+    data = request.get_json()
+    matches_updated = data['matches_updated'][0]
+
+    if not matches_updated:
+        return jsonify({"error": "Invalid input"}), 400
+
+    success = dbmanager.insert_matches(matches_updated)
     if success:
         return jsonify({"message": "Predictions submitted successfully"}), 200
     else:
