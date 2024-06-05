@@ -90,7 +90,7 @@ def matches():
     
     if username:
         if username == "admin":
-            # Admin doesnt have old preditctions
+            # Admin doesnt have preditctions, ver cargar mas de un partido 
             for match in matches: 
                 if isinstance(match['Date'], str):
                     match_datetime = datetime.strptime(match['Date'], "%a, %d %b %Y %H:%M:%S")
@@ -135,7 +135,7 @@ def submit_predictions():
 @app.route('/submit_matches', methods=['POST'])
 def submit_matches():
     data = request.get_json()
-    matches_updated = data['matches_updated'][0]
+    matches_updated = data['matches_updated']
 
     if not matches_updated:
         return jsonify({"error": "Invalid input"}), 400

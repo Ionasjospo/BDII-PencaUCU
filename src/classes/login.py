@@ -87,6 +87,7 @@ class LoginApp:
                     self.switch_to_admin_page()
                 else:
                     self.switch_to_index()
+                
             elif response.status_code == 400:
                 tkmb.showwarning(title='Login Failed', message='Missing username or password')
             elif response.status_code == 401 or  response.status_code == 404:
