@@ -1,4 +1,4 @@
-import customtkinter as ctk
+"""import customtkinter as ctk
 from classes.login import LoginApp
 from classes.register import RegisterApp
 from classes.fixture import FixtureApp
@@ -65,4 +65,17 @@ if __name__ == "__main__":
     main_app.start() 
 
     # Terminar el proceso de la API al cerrar la aplicación
-    api_process.terminate()
+    api_process.terminate()"""
+
+import subprocess
+
+if __name__ == "__main__":
+    # Iniciar la API en un proceso separado
+    api_process = subprocess.Popen(["python", "src/Api/API.py"])
+
+    try:
+        # Mantener el script en ejecución para mantener la API en funcionamiento
+        api_process.wait()
+    except KeyboardInterrupt:
+        # Terminar el proceso de la API al recibir una interrupción del teclado (Ctrl+C)
+        api_process.terminate()
