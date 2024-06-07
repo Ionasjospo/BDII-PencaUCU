@@ -86,7 +86,7 @@ class FixtureApp:
             flag_image = flag_image.resize((30, 20), Image.LANCZOS)
             return ctk.CTkImage(light_image=flag_image, size=(30, 20))
         else:
-            print(f"Bandera no encontrada para: {country_name}")
+            print(f"Flag not founded to : {country_name}")
             return None
 
     def fetch_matches(self, group):

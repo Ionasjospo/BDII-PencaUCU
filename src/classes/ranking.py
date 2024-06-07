@@ -2,6 +2,7 @@ from PIL import Image, ImageTk
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
 import requests
+import os
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -48,8 +49,23 @@ class RankingApp:
             ranking = response.json()
             return ranking
         return None
-    
-    
+
+    def load_flag_image(self, country_id):
+        url = f"http://localhost:5000/country/id?id={country_id}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            country_name = response.json()
+            flag_path = f"Assets/Images/Flags/Flag_of_{country_name}.png"
+            if os.path.exists(flag_path):
+                flag_image = Image.open(flag_path)
+                flag_image = flag_image.resize((30, 20), Image.LANCZOS)
+                return ctk.CTkImage(light_image=flag_image, size=(30, 20))
+            else:
+                print(f"Bandera no encontrada para: {country_name}")
+                return None
+        else:
+            print(f"Error al obtener el nombre del país para ID: {country_id}")
+            return None
 
     def display_ranking_table(self):
         ranking_data = self.fetch_ranking()
@@ -62,11 +78,16 @@ class RankingApp:
         ctk.CTkLabel(table_frame, text="Rank", anchor='center', width=20).grid(row=0, column=0, padx=20, pady=10, sticky='ew')
         ctk.CTkLabel(table_frame, text="Username", anchor='center', width=20).grid(row=0, column=1, padx=20, pady=10, sticky='ew')
         ctk.CTkLabel(table_frame, text="Points", anchor='center', width=20).grid(row=0, column=2, padx=20, pady=10, sticky='ew')
+        ctk.CTkLabel(table_frame, text="Champion", anchor='center', width=20).grid(row=0, column=3, padx=20, pady=10, sticky='ew')
+        ctk.CTkLabel(table_frame, text="Sub Champion", anchor='center', width=20).grid(row=0, column=4, padx=20, pady=10, sticky='ew')
 
         # Data
         for index, entry in enumerate(ranking_data, start=1):
+           
             username = entry["Username"]
             total_points = entry["Total Points"]
+            champion = self.load_flag_image(entry["Champion"])
+            sub_champion = self.load_flag_image(entry["Sub Champion"])
             
             if username == self.username:
                 bg_color = "blue"
@@ -74,7 +95,11 @@ class RankingApp:
                 bg_color = "#2b2b2b"       
 
             ctk.CTkLabel(table_frame, text=f"{index}", anchor='center', width=20, bg_color=bg_color).grid(row=index, column=0, padx=10, pady=10, sticky='ew')
-            ctk.CTkLabel(table_frame, text=username, anchor='center', width=40, bg_color=bg_color).grid(row=index, column=1, padx=10, pady=10, sticky='ew')
-            ctk.CTkLabel(table_frame, text=f"{total_points}", anchor='center', width=40, bg_color=bg_color).grid(row=index, column=2, padx=10, pady=10, sticky='ew')
+            ctk.CTkLabel(table_frame, text=username, anchor='center', width=40, bg_color= bg_color).grid(row=index, column=1, padx=10, pady=10, sticky='ew')
+            ctk.CTkLabel(table_frame, text=f"{total_points}", anchor='center', width=40, bg_color= bg_color).grid(row=index, column=2, padx=10, pady=10, sticky='ew')
+            
+            # Images cant be None because the user is already registered, so we don't need to check that
+            ctk.CTkLabel(table_frame, image=champion,text="", anchor='center', width=40, bg_color= bg_color).grid(row=index, column=3, padx=10, pady=10, sticky='ew')
+            ctk.CTkLabel(table_frame, image=sub_champion,text="", anchor='center', width=40,bg_color= bg_color).grid(row=index, column=4, padx=10, pady=10, sticky='ew')
 
         

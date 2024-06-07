@@ -148,11 +148,24 @@ def submit_matches():
     
 @app.route('/ranking', methods=['GET'])
 def ranking():
-    ranking = dbmanager.getRanking()
+    ranking = dbmanager.get_ranking()
     if ranking:
         return jsonify(ranking), 200
     else:
         return jsonify({"error": "No ranking found"}), 500
+    
+@app.route('/country/id', methods=['GET'])
+def get_country_by_id():
+    country_id = request.args.get('id')
+
+    if not country_id or not country_id.isdigit():
+        return jsonify({"error": "Invalid country id"}), 400
+
+    country = dbmanager.get_country_by_id(country_id)
+    if country:
+        return jsonify(country), 200
+    else:
+        return jsonify({"error": "Country not found"}), 404
         
 
 if __name__ == '__main__':
