@@ -54,6 +54,29 @@ def get_user_id(username):
         return results[0][0]
     return None
 
+def update_user(update_data):
+    try:
+        query = """
+        UPDATE USER
+        SET
+            name = %s,
+            surname = %s,
+            email = %s,
+            profile_picture = %s
+        WHERE username = %s
+        """
+        db.execute_query(query, (
+            update_data['First_Name'],
+            update_data['Last_Name'],
+            update_data['Email'],
+            update_data.get('Profile_Picture', None),
+            update_data['Username']
+        ))
+        return True
+    except Exception as e:
+        print(f"Error updating user: {e}")
+        return False
+
 def get_countries():
     query = "SELECT id_country, name FROM COUNTRY"
     results = db.fetch_results(query, params=None)

@@ -7,6 +7,7 @@
     <main class="main-frame">
       <div class="ranking-frame">
         <h2>Ranking</h2>
+        <p>Coming soon by Antonio...</p>
         <button @click="showIndex" class="button">Back to Index</button>
       </div>
     </main>
@@ -16,15 +17,15 @@
 <script>
 export default {
   name: 'RankingPage',
-  props: ['username'],
   data() {
     return {
-      logo: require('@/assets/ucu_white_logo.png')
+      logo: require('@/assets/ucu_white_logo.png'),
+      ranking: []  // This is not used now, but can be useful in the future
     }
   },
   methods: {
     showIndex() {
-      this.$router.push({ path: '/index', query: { username: this.username } });
+      this.$router.push('/index');
     }
   }
 }
@@ -61,5 +62,9 @@ h1 {
   color: white;
   cursor: pointer;
   margin-top: 20px;
+}
+
+p {
+  margin: 10px 0;
 }
 </style>

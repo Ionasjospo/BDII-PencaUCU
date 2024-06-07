@@ -4,6 +4,8 @@ import jwt
 import dbmanager
 from datetime import datetime, timedelta
 from functools import wraps
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app)
@@ -12,11 +14,11 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('x-access-token')
+        token = request.headers.get('Authorization')  # Changed to standard header
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            data = jwt.decode(token.split(" ")[1], app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = data['username']
         except jwt.ExpiredSignatureError:
             return jsonify({'message': 'Token has expired!'}), 401
@@ -32,7 +34,6 @@ def get_countries():
         return jsonify(countries), 200
     else:
         return jsonify({"error": "No countries found"}), 404
-
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -83,7 +84,7 @@ def login():
 @token_required
 def matches(current_user):
     group = request.args.get('group')
-    show_predictable = request.args.get('predictable', False)
+    show_predictable = request.args.get('predictable', 'false').lower() == 'true'
 
     if group:
         matches = dbmanager.matches(group)
@@ -92,25 +93,12 @@ def matches(current_user):
 
     if show_predictable:
         now = datetime.now()
-        filtered_matches = []
-        for match in matches:
-            match_datetime = match['Date']
-            if isinstance(match_datetime, str):
-                match_datetime = datetime.strptime(match_datetime, "%a, %d %b %Y %H:%M:%S")
-            if match_datetime > now + timedelta(minutes=30):
-                filtered_matches.append(match)
-        matches = filtered_matches
+        matches = [match for match in matches if match['Date'] > now + timedelta(minutes=30)]
 
     if current_user == "admin":
         now = datetime.now()
-        filtered_matches = []
-        for match in matches:
-            match_datetime = match['Date']
-            if isinstance(match_datetime, str):
-                match_datetime = datetime.strptime(match_datetime, "%a, %d %b %Y %H:%M:%S")
-            if match_datetime < now:
-                filtered_matches.append(match)
-        matches = filtered_matches      
+        matches = [match for match in matches if match['Date'] < now]
+
     else:
         predictions = dbmanager.get_user_predictions(current_user)
         for match in matches:
@@ -127,6 +115,7 @@ def matches(current_user):
         return jsonify(matches), 200
     else:
         return jsonify({"error": "No matches found"}), 404
+
 
 @app.route('/predictions', methods=['POST'])
 @token_required
@@ -162,6 +151,31 @@ def submit_matches(current_user):
         return jsonify({"message": "Predictions submitted successfully"}), 200
     else:
         return jsonify({"error": "Failed to submit predictions"}), 500
+
+@app.route('/profile', methods=['GET'])
+@token_required
+def get_profile(current_user):
+    user = dbmanager.find_user(current_user)
+    if user:
+        return jsonify(user), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
+
+@app.route('/profile', methods=['PUT'])
+@token_required
+def update_profile(current_user):
+    data = request.form.to_dict()
+    if 'profile_picture' in request.files:
+        profile_picture = request.files['profile_picture']
+        filename = secure_filename(profile_picture.filename)
+        profile_picture.save(os.path.join('Assets/Uploads', filename))
+        data['Profile_Picture'] = os.path.join('Assets/Uploads', filename)
+    data['Username'] = current_user
+    success = dbmanager.update_user(data)
+    if success:
+        return jsonify({"message": "Profile updated successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to update profile"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

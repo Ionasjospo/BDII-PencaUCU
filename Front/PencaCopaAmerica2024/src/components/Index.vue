@@ -46,8 +46,7 @@ export default {
       alert("Show notifications");
     },
     showProfileSettings() {
-      // Logic to show profile settings
-      alert("Show profile settings");
+      this.$router.push('/profile');
     },
     logout() {
       // Remove the JWT token from localStorage

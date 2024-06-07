@@ -17,10 +17,10 @@ CREATE TABLE USER (
     surname VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     password VARCHAR(60) NOT NULL,
-    total_points INT NOT NULL,
+    total_points INT NOT NULL DEFAULT 0,
     id_champion INT,
-    id_sub_champion INT
-
+    id_sub_champion INT,
+    profile_picture VARCHAR(255)
 );
 
 ALTER TABLE USER ADD FOREIGN KEY (id_champion) REFERENCES COUNTRY(id_country);

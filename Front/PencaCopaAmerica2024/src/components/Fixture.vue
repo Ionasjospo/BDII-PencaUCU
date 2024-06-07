@@ -54,11 +54,17 @@ export default {
     },
     async fetchMatches() {
       const groups = ['A', 'B', 'C']
+      const token = localStorage.getItem('token')
+      let fetchedMatches = []
       for (const group of groups) {
         try {
-          const response = await axios.get(`http://localhost:5000/matches?group=${group}`)
+          const response = await axios.get(`http://localhost:5000/matches?group=${group}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
           if (response.status === 200) {
-            this.matches = [...this.matches, ...response.data]
+            fetchedMatches = [...fetchedMatches, ...response.data]
           } else {
             alert('Failed to load matches')
           }
@@ -66,6 +72,9 @@ export default {
           alert(`Failed to load matches: ${error}`)
         }
       }
+      // Ordenar los partidos por fecha y hora
+      fetchedMatches.sort((a, b) => new Date(a.Date) - new Date(b.Date))
+      this.matches = fetchedMatches
     },
     formatDate(date) {
       const matchDatetime = new Date(date.replace(' GMT', ''))
