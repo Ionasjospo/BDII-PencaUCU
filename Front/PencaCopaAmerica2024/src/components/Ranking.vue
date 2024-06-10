@@ -20,12 +20,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(entry, index) in ranking" :key="entry.Username">
+            <tr v-for="(entry, index) in ranking" :key="entry.Username" :class="{ 'logged-in-user': entry.Username === loggedInUsername }">
               <td>{{ index + 1 }}</td>
               <td>{{ entry.Username }}</td>
               <td>{{ entry['Total Points'] }}</td>
-              <td><img :src="getFlagImage(entry.Champion)" alt="Champion Flag" class="flag" /></td>
-              <td><img :src="getFlagImage(entry['Sub Champion'])" alt="Sub Champion Flag" class="flag" /></td>
+              <td><img :src="flags[entry.Champion]" alt="Champion Flag" class="flag" /></td>
+              <td><img :src="flags[entry['Sub Champion']]" alt="Sub Champion Flag" class="flag" /></td>
             </tr>
           </tbody>
         </table>
@@ -42,15 +42,24 @@ export default {
   data() {
     return {
       logo: require('@/assets/ucu_white_logo.png'),
-      ranking: []
+      ranking: [],
+      flags: {},
+      loggedInUsername: null 
     };
   },
   methods: {
     async fetchRanking() {
+      const token = localStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:5000/ranking');
+        const response = await axios.get('http://localhost:5000/ranking', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (response.status === 200) {
-          this.ranking = response.data;
+          this.ranking = response.data.ranking;
+          this.loggedInUsername = response.data.username; 
+          this.loadFlags();
         } else {
           alert('Failed to fetch ranking');
         }
@@ -58,13 +67,23 @@ export default {
         alert(`Failed to fetch ranking: ${error}`);
       }
     },
-    async getFlagImage(countryId) {
+    async loadFlags() {
+      for (const entry of this.ranking) {
+        if (!this.flags[entry.Champion]) {
+          this.flags[entry.Champion] = await this.fetchFlagImage(entry.Champion);
+        }
+        if (!this.flags[entry['Sub Champion']]) {
+          this.flags[entry['Sub Champion']] = await this.fetchFlagImage(entry['Sub Champion']);
+        }
+      }
+    },
+    async fetchFlagImage(countryId) {
       try {
         const response = await axios.get(`http://localhost:5000/country/id?id=${countryId}`);
         if (response.status === 200) {
           const countryData = response.data;
-          const flagPath = `assets/Flags/Flag_of_${countryData}.png`;
-          return flagPath;
+          const flagPath = require(`@/assets/Flags/Flag_of_${countryData}.png`);
+          return flagPath ? flagPath : null;
         } else {
           console.error(`Failed to fetch flag image for country ID ${countryId}`);
           return null;
@@ -108,7 +127,7 @@ h1 {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #3498db; /* Cambiado a azul */
+  background-color: #3498db; 
   color: white;
   cursor: pointer;
 }
@@ -133,12 +152,16 @@ th, td {
 }
 
 th {
-  background-color: #3498db; /* Cambiado a azul */
+  background-color: #3498db; 
   color: white;
 }
 
 .flag {
   width: 30px;
   height: 20px;
+}
+
+.logged-in-user {
+  background-color: #007eec !important; 
 }
 </style>

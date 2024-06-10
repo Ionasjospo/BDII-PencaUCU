@@ -178,12 +178,14 @@ def update_profile(current_user):
         return jsonify({"error": "Failed to update profile"}), 500
     
 @app.route('/ranking', methods=['GET'])
-def ranking():
+@token_required
+def ranking(current_user):
     ranking = dbmanager.get_ranking()
     if ranking:
-        return jsonify(ranking), 200
+        return jsonify({"username": current_user, "ranking": ranking}), 200
     else:
         return jsonify({"error": "No ranking found"}), 500
+
     
 @app.route('/country/id', methods=['GET'])
 def get_country_by_id():
