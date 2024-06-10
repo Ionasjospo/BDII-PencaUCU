@@ -270,3 +270,25 @@ def hash_password(password):
 def check_password(password, hashed):
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
+def get_ranking():
+    query = "SELECT username, total_points, id_champion, id_sub_champion FROM USER ORDER BY total_points DESC"
+    results = db.fetch_results(query, None)
+    ranking = []
+    print(results)
+    for row in results:
+        rank= {
+            "Username": row[0],
+            "Total Points": row[1],
+            "Champion": row[2],
+            "Sub Champion": row[3]
+        }
+        ranking.append(rank)
+    return ranking
+
+def get_country_by_id(country_id):
+    query = "SELECT name FROM COUNTRY WHERE id_country = %s"
+    results = db.fetch_results(query, (country_id,))
+    if results:
+        return results[0][0]
+    return None
+
