@@ -5,7 +5,10 @@ import FixturePage from '../components/Fixture.vue';
 import PredictPage from '../components/Predict.vue';
 import RankingPage from '../components/Ranking.vue';
 import RegisterPage from '../components/Register.vue';
-import AdminPage from '../components/admin_page.vue';
+import AdminResults from '../components/admin_results.vue';
+import AdminIndex from '../components/admin_Index.vue';
+import AdminFixture from '../components/admin_Fixture.vue';
+import AdminRanking from '../components/admin_Ranking.vue';
 import ProfilePage from '../components/Profile.vue';
 
 const routes = [
@@ -15,7 +18,10 @@ const routes = [
   { path: '/predict', component: PredictPage, meta: { requiresAuth: true } },
   { path: '/ranking', component: RankingPage, meta: { requiresAuth: true } },
   { path: '/register', component: RegisterPage },
-  { path: '/admin', component: AdminPage, meta: { requiresAuth: true } },
+  { path: '/adminResults', component: AdminResults, meta: { requiresAuth: true } },
+  { path: '/adminIndex', component: AdminIndex, meta: { requiresAuth: true } },
+  { path: '/adminFixture', component: AdminFixture, meta: { requiresAuth: true } },
+  { path: '/adminRanking', component: AdminRanking, meta: { requiresAuth: true } },
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } }
 ];
 

@@ -48,8 +48,8 @@ export default {
     switchToIndex() {
       this.$router.push('/index')
     },
-    switchToAdminPage() {
-      this.$router.push('/admin')
+    switchToAdminIndex() {
+      this.$router.push('/adminIndex')
     },
     async login() {
       if (!this.username || !this.password) {
@@ -67,7 +67,7 @@ export default {
           const token = response.data.token
           localStorage.setItem('token', token)
           if (this.username === 'admin') {
-            this.switchToAdminPage()
+            this.switchToAdminIndex()
           } else {
             this.switchToIndex()
           }
