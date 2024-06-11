@@ -87,6 +87,7 @@ def login():
 def matches(current_user):
     group = request.args.get('group')
     show_predictable = request.args.get('predictable', 'false').lower() == 'true'
+    results_admin = request.args.get('results_admin', 'false').lower() == 'true'
 
     if group:
         matches = dbmanager.matches(group)
@@ -97,7 +98,7 @@ def matches(current_user):
         now = datetime.now()
         matches = [match for match in matches if match['Date'] > now + timedelta(minutes=30)]
 
-    if current_user == "admin":
+    if (current_user == "admin" and results_admin):
         now = datetime.now()
         matches = [match for match in matches if match['Date'] < now]
 
@@ -115,6 +116,8 @@ def matches(current_user):
 
     if matches:
         return jsonify(matches), 200
+    if (results_admin and matches == []):
+        return '', 204
     else:
         return jsonify({"error": "No matches found"}), 404
 
@@ -183,7 +186,8 @@ def update_profile(current_user):
 def ranking(current_user):
     ranking = dbmanager.get_ranking()
     if ranking:
-        return jsonify({"username": current_user, "ranking": ranking}), 200
+        filtered_ranking = [user for user in ranking if user['Username'] != 'admin']
+        return jsonify({"username": current_user, "ranking": filtered_ranking}), 200
     else:
         return jsonify({"error": "No ranking found"}), 500
 
