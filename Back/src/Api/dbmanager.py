@@ -76,6 +76,10 @@ def update_user(update_data):
     except Exception as e:
         print(f"Error updating user: {e}")
         return False
+    
+def get_users():
+    query = "SELECT id_student, username, email FROM USER"
+    return db.fetch_results(query, None)
 
 def get_countries():
     query = "SELECT id_country, name FROM COUNTRY"
@@ -291,4 +295,26 @@ def get_country_by_id(country_id):
     if results:
         return results[0][0]
     return None
+
+def has_predictions_for_stage(user_id, stage_name):
+    query = """
+    SELECT COUNT(*)
+    FROM PREDICTION
+    JOIN FOOTBALL_MATCH ON PREDICTION.id_match = FOOTBALL_MATCH.id_match
+    JOIN STAGE ON FOOTBALL_MATCH.id_stage = STAGE.id_stage
+    WHERE PREDICTION.id_user = %s AND STAGE.name = %s
+    """
+    result = db.fetch_results(query, (user_id, stage_name))
+    return result[0][0] > 0
+
+def send_notification(user_id, message):
+    query = "INSERT INTO NOTIFICATION (id_user, message) VALUES (%s, %s)"
+    db.execute_query(query, (user_id, message))
+
+def get_notifications(user_id):
+    query = "SELECT id_notification, message FROM NOTIFICATION WHERE id_user = %s"
+    results = db.fetch_results(query, (user_id,))
+    notifications = [{"id_notification": row[0], "message": row[1]} for row in results]
+    return notifications
+
 

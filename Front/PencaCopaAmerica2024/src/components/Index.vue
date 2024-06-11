@@ -4,7 +4,10 @@
       <img :src="require('@/assets/ucu_white_logo.png')" alt="UCU Logo" class="logo"/>
       <h1>Welcome to the penca of the copa america 2024</h1>
       <div class="header-icons">
-        <img :src="require('@/assets/Icons/notification.png')" alt="Notification Icon" class="icon" @click="showNotifications"/>
+        <div class="notification-icon" @click="showNotifications">
+          <img :src="require('@/assets/Icons/notification.png')" alt="Notification Icon" class="icon"/>
+          <span v-if="unreadNotificationsCount > 0" class="notification-badge">{{ unreadNotificationsCount }}</span>
+        </div>
         <img :src="require('@/assets/Icons/settings.png')" alt="Settings Icon" class="icon" @click="showProfileSettings"/>
         <img :src="require('@/assets/Icons/logout.png')" alt="Logout Icon" class="icon" @click="logout"/>
       </div>
@@ -24,13 +27,29 @@
           <span>Predict</span>
         </button>
       </div>
+      <div v-if="showDropdown" class="notification-dropdown">
+        <ul>
+          <li v-for="notification in notifications" :key="notification.id_notification">
+            {{ notification.message }}
+          </li>
+        </ul>
+      </div>
     </main>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'IndexPage',
+  data() {
+    return {
+      showDropdown: false,
+      notifications: [],
+      unreadNotificationsCount: 0,
+    };
+  },
   methods: {
     showFixture() {
       this.$router.push('/fixture');
@@ -42,18 +61,39 @@ export default {
       this.$router.push('/predict');
     },
     showNotifications() {
-      // Logic to show notifications
-      alert("Show notifications");
+      this.showDropdown = !this.showDropdown;
+      if (this.showDropdown) {
+        this.fetchNotifications();
+      }
     },
     showProfileSettings() {
       this.$router.push('/profile');
     },
     logout() {
-      // Remove the JWT token from localStorage
       localStorage.removeItem('token');
-      // Redirect to the login page
       this.$router.push('/');
+    },
+    async fetchNotifications() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/notifications', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.status === 200) {
+          this.notifications = response.data;
+          this.unreadNotificationsCount = this.notifications.length;
+        } else {
+          alert('Failed to load notifications');
+        }
+      } catch (error) {
+        alert(`Failed to load notifications: ${error}`);
+      }
     }
+  },
+  mounted() {
+    this.fetchNotifications();
   }
 }
 </script>
@@ -88,6 +128,22 @@ h1 {
   cursor: pointer;
 }
 
+.notification-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
 .button-container {
   display: flex;
   justify-content: center;
@@ -118,5 +174,31 @@ h1 {
   width: 100px;
   height: 100px;
   margin-bottom: 10px;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  width: 300px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notification-dropdown ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.notification-dropdown li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.notification-dropdown li:last-child {
+  border-bottom: none;
 }
 </style>
