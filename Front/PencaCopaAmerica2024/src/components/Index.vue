@@ -31,19 +31,19 @@
         <div class="col-sm d-flex justify-content-center mb-3">
           <button @click="showFixture" class="button-card">
             <img :src="require('@/assets/Icons/fixture.png')" alt="Fixture Icon" class="icon"/>
-            <span>Fixture</span>
+            <span style = "font-weight: bold;">Fixture</span>
           </button>
         </div>
         <div class="col-sm d-flex justify-content-center mb-3">
           <button @click="showRanking" class="button-card">
             <img :src="require('@/assets/Icons/ranking.png')" alt="Ranking Icon" class="icon"/>
-            <span>Ranking</span>
+            <span style = "font-weight: bold;">Ranking</span>
           </button>
         </div>
         <div class="col-sm d-flex justify-content-center mb-3">
           <button @click="showPredict" class="button-card">
             <img :src="require('@/assets/Icons/prediction.png')" alt="Prediction Icon" class="icon"/>
-            <span>Predict</span>
+            <span style = "font-weight: bold;">Predict</span>
           </button>
         </div>
       </div>
@@ -90,10 +90,10 @@ export default {
 
 
 .title {
-  font-size: 900%;
+  font-size: 700%;
   font-family: 'Impact', sans-serif;
   margin: 10px;
-  color: #8ee9ce;
+  color: #FBEFEF;
   /* color: #CBFFA9; */
 }
 
@@ -132,14 +132,14 @@ h1 {
   justify-content: center;
   border: 1px solid #ccc;
   border-radius: 10px;
-  background-color: #F3F7EC;
+  background-color: #4F6F52;
   color: #000000;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .button-card:hover {
-  background-color: #555;
+  background-color: #ffffff;
 }
 
 .button-card .icon {
