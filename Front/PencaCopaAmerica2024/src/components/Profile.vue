@@ -46,7 +46,7 @@ export default {
         email: '',
         profile_picture: null,
       },
-      profileImage: require('@/assets/Icons/person.png'), // Default profile image URL
+      profileImage: require('@/assets/Icons/person.png'), 
     };
   },
   methods: {
