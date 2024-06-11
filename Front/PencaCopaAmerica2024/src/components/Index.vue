@@ -114,6 +114,12 @@ export default {
       } catch (error) {
         alert(`Failed to load notifications: ${error}`);
       }
+    },
+    goToPredictions(notification) {
+      this.$router.push('/predict');
+      // Lógica para marcar la notificación como leída
+      console.log('Notification clicked:', notification);
+      // Aquí puedes implementar la actualización del estado de la notificación en el backend
     }
   },
   mounted() {
@@ -214,6 +220,7 @@ h1 {
   top: 50px;
   right: 20px;
   width: 300px;
+  color: black;
   background: white;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -228,7 +235,14 @@ h1 {
 
 .notification-dropdown li {
   padding: 10px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #cccccc57;
+}
+
+.notification-dropdown li:hover {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f3f3f3cf;
+  border-bottom: 1px solid #cccccc57;
 }
 
 .notification-dropdown li:last-child {
