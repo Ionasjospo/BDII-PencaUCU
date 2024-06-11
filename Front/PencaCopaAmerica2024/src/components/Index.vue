@@ -1,29 +1,54 @@
 <template>
   <div id="app">
     <header>
-      <img :src="require('@/assets/ucu_white_logo.png')" alt="UCU Logo" class="logo"/>
-      <h1>Welcome to the penca of the copa america 2024</h1>
+      <h1 class="title">MENU</h1>
+      
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <p class="responsive-paragraph">
+              Welcome to Penca UCU 🌟 <br> 
+              The best site for sports predictions and friendly competitions. 
+              Whether you’re here to analyze fixtures, climb the rankings, 
+              or make accurate predictions, Penca has you covered. 
+              Let’s kick off the excitement together! 🏆⚽📈
+            </p>
+          </div>
+        </div>
+      </div>
+      
       <div class="header-icons">
         <img :src="require('@/assets/Icons/notification.png')" alt="Notification Icon" class="icon" @click="showNotifications"/>
         <img :src="require('@/assets/Icons/settings.png')" alt="Settings Icon" class="icon" @click="showProfileSettings"/>
         <img :src="require('@/assets/Icons/logout.png')" alt="Logout Icon" class="icon" @click="logout"/>
       </div>
     </header>
+    
     <main>
-      <div class="button-container">
-        <button @click="showFixture" class="button">
-          <img :src="require('@/assets/Icons/fixture.png')" alt="Fixture Icon" class="icon"/>
-          <span>Fixture</span>
-        </button>
-        <button @click="showRanking" class="button">
-          <img :src="require('@/assets/Icons/ranking.png')" alt="Ranking Icon" class="icon"/>
-          <span>Ranking</span>
-        </button>
-        <button @click="showPredict" class="button">
-          <img :src="require('@/assets/Icons/prediction.png')" alt="Prediction Icon" class="icon"/>
-          <span>Predict</span>
-        </button>
+    
+    <div class="container mt-3">
+      <div class="row d-flex justify-content-center">
+        <div class="col-sm d-flex justify-content-center mb-3">
+          <button @click="showFixture" class="button-card">
+            <img :src="require('@/assets/Icons/fixture.png')" alt="Fixture Icon" class="icon"/>
+            <span>Fixture</span>
+          </button>
+        </div>
+        <div class="col-sm d-flex justify-content-center mb-3">
+          <button @click="showRanking" class="button-card">
+            <img :src="require('@/assets/Icons/ranking.png')" alt="Ranking Icon" class="icon"/>
+            <span>Ranking</span>
+          </button>
+        </div>
+        <div class="col-sm d-flex justify-content-center mb-3">
+          <button @click="showPredict" class="button-card">
+            <img :src="require('@/assets/Icons/prediction.png')" alt="Prediction Icon" class="icon"/>
+            <span>Predict</span>
+          </button>
+        </div>
       </div>
+    </div>
+
     </main>
   </div>
 </template>
@@ -63,6 +88,15 @@ export default {
   text-align: center;
 }
 
+
+.title {
+  font-size: 900%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: #8ee9ce;
+  /* color: #CBFFA9; */
+}
+
 .logo {
   width: 250px;
   height: 150px;
@@ -88,14 +122,8 @@ h1 {
   cursor: pointer;
 }
 
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-}
 
-.button {
+.button-card {
   width: 350px;
   height: 350px;
   display: flex;
@@ -104,17 +132,17 @@ h1 {
   justify-content: center;
   border: 1px solid #ccc;
   border-radius: 10px;
-  background-color: #444;
-  color: #fff;
+  background-color: #F3F7EC;
+  color: #000000;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.button:hover {
+.button-card:hover {
   background-color: #555;
 }
 
-.button .icon {
+.button-card .icon {
   width: 100px;
   height: 100px;
   margin-bottom: 10px;
