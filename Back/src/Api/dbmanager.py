@@ -38,11 +38,16 @@ def find_user(username):
     results = db.fetch_results(query, (username,))
     if results:
         user = {
-            "Username": results[0][2],  
+            "Username": results[0][2],
+            "Name": results[0][3],
+            "Surname": results[0][4], 
             "Document": results[0][1],  
             "Password": results[0][6],  
             "Champion_Prediction": results[0][8],  
-            "Second_Prediction": results[0][9]  
+            "Second_Prediction": results[0][9],
+            "Email": results[0][5],
+            "Total_Points": results[0][7],
+            "Profile_Picture": results[0][10]
         }
         return user
     return None
@@ -66,16 +71,17 @@ def update_user(update_data):
         WHERE username = %s
         """
         db.execute_query(query, (
-            update_data['First_Name'],
-            update_data['Last_Name'],
-            update_data['Email'],
-            update_data.get('Profile_Picture', None),
-            update_data['Username']
+            update_data['first_name'],
+            update_data['last_name'],
+            update_data['email'],
+            update_data.get('profile_picture', None),
+            update_data['username']
         ))
         return True
     except Exception as e:
         print(f"Error updating user: {e}")
         return False
+
     
 def get_users():
     query = "SELECT id_student, username, email FROM USER"
