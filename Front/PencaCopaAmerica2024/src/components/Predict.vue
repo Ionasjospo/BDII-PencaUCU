@@ -16,11 +16,11 @@
             <div class="match-inner-frame">
               <span class="time">{{ formatTime(match.Date) }}</span>
               <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag" />
-              <span class="team">{{ match['Home team'] }} [</span>
+              <span class="team">{{ match['Home team'] }} </span>
               <input type="number" :value="getHomeScore(match)" @input="updateHomeScore(match, $event.target.value)" class="score" min="0" />
-              <span class="team">] Vs [</span>
+              <span class="team"> Vs </span>
               <input type="number" :value="getAwayScore(match)" @input="updateAwayScore(match, $event.target.value)" class="score" min="0" />
-              <span class="team">] {{ match['Away team'] }}</span>
+              <span class="team"> {{ match['Away team'] }}</span>
               <img :src="getFlagImage(match['Away team'])" alt="Away Flag" class="flag" />
             </div>
           </div>
@@ -166,7 +166,7 @@ export default {
 .logo {
   width: 250px;
   height: 150px;
-  margin: 10px auto;
+  margin: 0px auto;
 }
 
 h1 {
@@ -189,6 +189,7 @@ h1 {
   background-color: #1abc9c;
   color: white;
   cursor: pointer;
+  margin: 10px;
 }
 
 .scrollable-frame {

@@ -72,6 +72,8 @@ CREATE TABLE NOTIFICATION (
 ALTER TABLE NOTIFICATION ADD FOREIGN KEY (id_user) REFERENCES USER(id_student);
 
 
+
+
 #ver si se puede hacer un trigger para que se actualicen los puntos de los usuarios cuando se actualiza la tabla de partidos
 #CREATE TRIGGER update_points AFTER UPDATE ON FOOTBALL_MATCH
 #FOR EACH ROW

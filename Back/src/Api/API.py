@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import jwt
 import dbmanager
+import schedule
 from datetime import datetime, timedelta
+import time
 from functools import wraps
 import os
 from werkzeug.utils import secure_filename
@@ -116,7 +118,6 @@ def matches(current_user):
     else:
         return jsonify({"error": "No matches found"}), 404
 
-
 @app.route('/predictions', methods=['POST'])
 @token_required
 def submit_predictions(current_user):
@@ -176,6 +177,71 @@ def update_profile(current_user):
         return jsonify({"message": "Profile updated successfully"}), 200
     else:
         return jsonify({"error": "Failed to update profile"}), 500
+
+@app.route('/ranking', methods=['GET'])
+@token_required
+def ranking(current_user):
+    ranking = dbmanager.get_ranking()
+    if ranking:
+        return jsonify({"username": current_user, "ranking": ranking}), 200
+    else:
+        return jsonify({"error": "No ranking found"}), 500
+
+@app.route('/country/id', methods=['GET'])
+def get_country_by_id():
+    country_id = request.args.get('id')
+
+    if not country_id or not country_id.isdigit():
+        return jsonify({"error": "Invalid country id"}), 400
+
+    country = dbmanager.get_country_by_id(country_id)
+    if country:
+        return jsonify(country), 200
+    else:
+        return jsonify({"error": "Country not found"}), 404
+
+@app.route('/notifications', methods=['GET'])
+@token_required
+def get_notifications(current_user):
+    user_id = dbmanager.get_user_id(current_user)
+    if not user_id:
+        return jsonify({"error": "User not found"}), 404
+
+    notifications = dbmanager.get_notifications(user_id)
+    if notifications:
+        return jsonify(notifications), 200
+    else:
+        return jsonify([]), 200  
+
+
+def notify_users(stage_name):
+    users = dbmanager.get_users()
+    for user in users:
+        if not dbmanager.has_predictions_for_stage(user[0], stage_name):
+            dbmanager.send_notification(user[0], f"No has cargado tus predicciones para la etapa {stage_name}.")
+
+def schedule_notifications():
+    # Fechas clave para la Copa América 2024
+    schedule.every().day.at("09:00").do(check_and_notify, stage_name="Primera ronda - Grupos").until("2024-06-21")
+    schedule.every().day.at("09:00").do(check_and_notify, stage_name="Cuartos de final").until("2024-07-05")
+    schedule.every().day.at("09:00").do(check_and_notify, stage_name="Semifinales").until("2024-07-10")
+    schedule.every().day.at("09:00").do(check_and_notify, stage_name="Final").until("2024-07-14")
+
+def check_and_notify(stage_name):
+    today = datetime.today().date()
+    key_dates = {
+        "Primera ronda - Grupos": datetime(2024, 6, 20).date(),
+        "Cuartos de final": datetime(2024, 7, 4).date(),
+        "Semifinales": datetime(2024, 7, 9).date(),
+        "Final": datetime(2024, 7, 13).date(),
+    }
+    if today == key_dates[stage_name]:
+        notify_users(stage_name)
+
+def run_scheduler():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
