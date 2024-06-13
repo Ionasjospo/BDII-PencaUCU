@@ -154,6 +154,7 @@ h1 {
   padding: 10px;
 }
 
+
 .header-icons {
   position: absolute;
   top: 20px;
@@ -199,7 +200,7 @@ h1 {
   justify-content: center;
   border: 1px solid #ccc;
   border-radius: 10px;
-  background-color: #4F6F52;
+  background-color: #139279;
   color: #000000;
   cursor: pointer;
   transition: background-color 0.3s;

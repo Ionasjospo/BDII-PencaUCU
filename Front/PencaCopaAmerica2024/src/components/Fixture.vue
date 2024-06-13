@@ -1,28 +1,51 @@
 <template>
-  <div>
-    <header>
-      <img :src="logo" alt="UCU Logo" class="logo" />
-      <h1>Fixture bro</h1>
-    </header>
-    <div class="button-frame">
-      <button @click="showIndex" class="button">Back to Index</button>
+  <header>
+    <button @click="showIndex" class="back-button">
+      <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+    </button>
+    <h1 class="title">FIXTURE</h1>
+  </header>
+
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-6">
+        <h4>Home</h4>
+      </div>
+
+      <div class="col-6">
+        <h4>Away</h4>
+      </div>
     </div>
-    <div class="frame">
-      <div v-for="(matches, group) in groupedMatches" :key="group">
-        <h2>{{ group }}</h2>
-        <div v-for="match in matches" :key="match.Date" class="match">
-          <div class="match-inner-frame">
-            <span class="time">{{ formatDate(match.Date) }}</span>
-            <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag" />
-            <span class="team">{{ match['Home team'] }}</span>
-            <span class="vs">Vs</span>
-            <span class="team">{{ match['Away team'] }}</span>
-            <img :src="getFlagImage(match['Away team'])" alt="Away Flag" class="flag" />
+  </div> 
+    
+  <div class="container">
+    <div v-for="(matches, group) in groupedMatches" :key="group">
+      <div v-for="match in matches" :key="match.Date" class="mb-4">
+          
+        <div class="card">
+          <div class="card-body row align-items-center">
+            <div class="col-4 d-flex justify-content-center align-items-center">
+              <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag me-2" />
+                <p class="team mb-0">{{ match['Home team'] }}</p>
+            </div>
+
+            <div class="col-4 text-center">
+              <p class="team mb-0">vs</p>
+            </div>
+
+            <div class="col-4 d-flex justify-content-center align-items-center">
+              <p class="team mb-0 me-2">{{ match['Away team'] }}</p>
+              <img :src="getFlagImage(match['Away team'])" alt="Away Flag" class="flag" />
+            </div>
+          </div>
+
+          <div class="card-footer text-center py-2 custom-card-foooter">
+            {{ formatDate(match.Date) }}
           </div>
         </div>
       </div>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -78,8 +101,17 @@ export default {
     },
     formatDate(date) {
       const matchDatetime = new Date(date.replace(' GMT', ''))
-      return matchDatetime.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
-    },
+      
+    
+      const day = matchDatetime.getDate()
+      const month = matchDatetime.toLocaleString('es-ES', { month: 'long' })
+      const hours = matchDatetime.getHours()
+      const minutes = matchDatetime.getMinutes().toString().padStart(2, '0')
+
+      return `${day} de ${month.charAt(0).toUpperCase() + month.slice(1)} | ${hours}:${minutes} hs`
+    }
+
+,
     getFlagImage(team) {
       const flagPath = require(`@/assets/Flags/Flag_of_${team}.png`)
       return flagPath ? flagPath : null
@@ -92,19 +124,35 @@ export default {
 </script>
 
 <style scoped>
-.logo {
-  width: 250px;
-  height: 150px;
-  margin: 10px auto;
+.title {
+  font-size: 700%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: #FBEFEF;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.custom-card-foooter{
+  background-color: #12997e;
+  color: white;
+  
 }
 
 h1, h2 {
   text-align: center;
-}
-
-.button-frame {
-  text-align: center;
-  margin: 20px;
 }
 
 .button {
@@ -116,37 +164,13 @@ h1, h2 {
   cursor: pointer;
 }
 
-.frame {
-  padding: 20px;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.match {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-.match-inner-frame {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .flag {
-  width: 30px;
-  height: 20px;
+  width: 20%;
+  height: auto;
 }
 
 .team {
-  font-weight: bold;
-}
-
-.vs {
-  margin: 0 10px;
+  color: black;
 }
 
 .time {
