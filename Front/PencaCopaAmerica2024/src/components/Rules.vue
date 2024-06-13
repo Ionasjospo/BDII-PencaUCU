@@ -1,4 +1,7 @@
 <template>
+  <button @click="showIndex" class="back-button">
+                <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+            </button>
   <div class="container mt-4">
     <div class="card">
       <div class="card-body">
@@ -14,7 +17,7 @@
           <li>5 points for Sub-Champion</li>
         </ul>
         <p class="card-text">The prediction can be entered up to 60 minutes before the start of each match.</p>
-        <router-link to="/index" class="btn btn-primary button back-button"><img :src="require('@/assets/Icons/backarrow.png')" alt="Back to Index" /></router-link>
+        
       </div>
     </div>
   </div>
@@ -23,26 +26,33 @@
 <script>
 /* eslint-disable vue/multi-word-component-names */
 export default {
-  name: 'Rules'
+  name: 'Rules',
+    methods: {
+        showIndex() {
+            this.$router.push('/index')
+        }
+    }
 }
 </script>
 
 <style scoped>
+h1 {
+  color: #bebebe;
+}
+
 .card-text {
   text-align: justify;
+  color: #bebebe;
 }
 
-.button {
-  padding: 10px 20px;
+
+.back-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
   border: none;
-  border-radius: 5px;
-  background-color: #1abc9c;
-  color: white;
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: #003c30;
 }
 
 .back-button img {
@@ -52,7 +62,7 @@ export default {
 
 .card {
   border-radius: 30px;
-  background: #e0e0e0;
+  background: #e0e0e000;
   box-shadow: 15px 15px 30px #bebebe,
              -15px -15px 30px #ffffff;
 }
