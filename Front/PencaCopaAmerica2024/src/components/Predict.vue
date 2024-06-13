@@ -1,32 +1,51 @@
 <template>
-  <div>
-    <header>
-      <img :src="logo" alt="UCU Logo" class="logo" />
-      <h1>Predict Matches</h1>
-    </header>
-    <main class="main-frame">
-      <div class="button-frame">
-        <button @click="submitPredictions" class="button">Submit Predictions</button>
-        <button @click="backToIndex" class="button">Back to Index</button>
-      </div>
-      <div class="scrollable-frame">
-        <div v-for="(matches, date) in groupedMatches" :key="date">
-          <h2>{{ date }}</h2>
-          <div v-for="match in matches" :key="match.id_match" class="match-frame">
-            <div class="match-inner-frame">
-              <span class="time">{{ formatTime(match.Date) }}</span>
-              <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag" />
-              <span class="team">{{ match['Home team'] }} </span>
-              <input type="number" :value="getHomeScore(match)" @input="updateHomeScore(match, $event.target.value)" class="score" min="0" />
-              <span class="team"> Vs </span>
-              <input type="number" :value="getAwayScore(match)" @input="updateAwayScore(match, $event.target.value)" class="score" min="0" />
-              <span class="team"> {{ match['Away team'] }}</span>
+  <header>
+    <button @click="backToIndex" class="back-button">
+      <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+    </button>
+    <h1 class="title">PREDICTONS</h1>
+  </header>
+
+  <div class="container">
+      <div v-for="match in matches" :key="match.id_match" class="mb-4">
+        <div class="card">
+          <div class="card-body row align-items-center">              
+            <div class="col-4 d-flex justify-content-center align-items-center">
+              <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag me-2" />
+              <p class="team mb-0">{{ match['Home team'] }}</p>
+            </div>
+              
+            <div class="col-1 text-center">
+              <input type="number" :value="getHomeScore(match)" @input="updateHomeScore(match, $event.target.value)" class="form-control score w-15" min="0" />
+            </div>
+            
+            <div class="col-2 text-center">
+              <p class="team mb-0">vs</p>
+            </div>
+              
+            <div class="col-1  text-center">
+              <input type="number" :value="getAwayScore(match)" @input="updateAwayScore(match, $event.target.value)" class="form-control score w-15" min="0" />
+            </div>
+              
+            <div class="col-4 d-flex justify-content-center align-items-center">
+              <p class="team mb-0 me-2">{{ match['Away team'] }}</p>
               <img :src="getFlagImage(match['Away team'])" alt="Away Flag" class="flag" />
             </div>
           </div>
+
+          <div class="card-footer text-center py-2 custom-card-footer">
+              {{ formatDate(match.Date) }}
+          </div>
         </div>
       </div>
-    </main>
+  
+
+  <div class="row">
+    <div class="col-12">
+      <button @click="submitPredictions" class="button">Submit predictions</button>
+    </div>
+  </div>
+  
   </div>
 </template>
 
@@ -38,7 +57,6 @@ export default {
   name: 'PredictPage',
   data() {
     return {
-      logo: require('@/assets/ucu_white_logo.png'),
       matches: [],
       predictions: reactive({})
     }
@@ -90,6 +108,17 @@ export default {
     formatTime(date) {
       const matchDatetime = new Date(date.replace(' GMT', ''))
       return matchDatetime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    },
+    formatDate(date) {
+      const matchDatetime = new Date(date.replace(' GMT', ''))
+      
+    
+      const day = matchDatetime.getDate()
+      const month = matchDatetime.toLocaleString('es-ES', { month: 'long' })
+      const hours = matchDatetime.getHours()
+      const minutes = matchDatetime.getMinutes().toString().padStart(2, '0')
+
+      return `${day} de ${month.charAt(0).toUpperCase() + month.slice(1)} | ${hours}:${minutes} hs`
     },
     getFlagImage(team) {
       try {
@@ -163,23 +192,11 @@ export default {
 </script>
 
 <style scoped>
-.logo {
-  width: 250px;
-  height: 150px;
-  margin: 0px auto;
-}
-
-h1 {
-  text-align: center;
-}
-
-.main-frame {
-  padding: 20px;
-}
-
-.button-frame {
-  text-align: center;
-  margin: 20px;
+.title {
+  font-size: 700%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: #FBEFEF;
 }
 
 .button {
@@ -192,23 +209,40 @@ h1 {
   margin: 10px;
 }
 
+input{
+  background-color: #FBEFEF;
+}
+.custom-card-footer{
+  background-color: #12997e;
+  color: white;
+  
+}
+
+.card{
+  background-color: #FBEFEF;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+
 .scrollable-frame {
   max-height: 70vh;
   overflow-y: auto;
   padding: 20px;
 }
 
-.match-frame {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center; /* Centra el contenido horizontalmente */
-}
-
-.match-inner-frame {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 
 .flag {
   width: 30px;
@@ -224,7 +258,6 @@ h1 {
 }
 
 .score {
-  width: 50px;
   text-align: center;
 }
 </style>
