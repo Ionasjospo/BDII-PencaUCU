@@ -1,27 +1,27 @@
 <template>
   <div>
     <header>
-      <img :src="logo" alt="UCU Logo" class="logo" />
-      <h1>Ranking</h1>
+      <button @click="backToIndex" class="back-button">
+        <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+      </button>
+      <h1 class="title">RANKING</h1>
     </header>
+    
     <main class="main-frame">
-      <div class="button-frame">
-        <button @click="backToIndex" class="button">Back to Index</button>
-      </div>
-      <div class="table-container">
-        <table>
-          <thead>
+      <div class="container mt-3">
+        <table class="table table-striped table-hover table-bordered rounded-lg">
+          <thead class="thead-dark">
             <tr>
-              <th>Rank</th>
-              <th>Username</th>
-              <th>Points</th>
-              <th>Champion</th>
-              <th>Sub Champion</th>
+              <th scope="col">Rank</th>
+              <th scope="col">Username</th>
+              <th scope="col">Points</th>
+              <th scope="col">Champion</th>
+              <th scope="col">Sub Champion</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(entry, index) in ranking" :key="entry.Username" :class="{ 'logged-in-user': entry.Username === loggedInUsername }">
-              <td>{{ index + 1 }}</td>
+            <tr v-for="(entry, index) in ranking" :key="entry.Username" :class="{ 'table-primary': entry.Username === loggedInUsername }">
+              <th scope="row">{{ index + 1 }}</th>
               <td>{{ entry.Username }}</td>
               <td>{{ entry['Total Points'] }}</td>
               <td><img :src="flags[entry.Champion]" alt="Champion Flag" class="flag" /></td>
@@ -31,6 +31,7 @@
         </table>
       </div>
     </main>
+  
   </div>
 </template>
 
@@ -104,19 +105,52 @@ export default {
 </script>
 
 <style scoped>
-.logo {
-  width: 250px;
-  height: 150px;
-  margin: 10px auto;
-}
-
-h1 {
-  text-align: center;
-}
-
 .main-frame {
-  padding: 20px;
+  background: transparent
 }
+
+.table {
+  border-radius: 7px;   
+  overflow: hidden;
+}
+
+.flag {
+  width: 30px;
+  height: 20px;
+}
+
+.table-primary {
+  background-color: #b8daff;
+}
+
+header {
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  position: relative;
+}
+.title {
+  font-size: 700%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: #FBEFEF;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+
 
 .button-frame {
   text-align: center;
@@ -132,10 +166,6 @@ h1 {
   cursor: pointer;
 }
 
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-}
 
 table {
   width: 100%;
@@ -156,10 +186,10 @@ th {
   color: white;
 }
 
-.flag {
+/* .flag {
   width: 30px;
   height: 20px;
-}
+} */
 
 .logged-in-user {
   background-color: #007eec !important; 

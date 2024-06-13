@@ -26,7 +26,7 @@
           <div class="card-body row align-items-center">
             <div class="col-4 d-flex justify-content-center align-items-center">
               <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag me-2" />
-                <p class="team mb-0">{{ match['Home team'] }}</p>
+              <p class="team mb-0">{{ match['Home team'] }}</p>
             </div>
 
             <div class="col-4 text-center">
@@ -39,7 +39,7 @@
             </div>
           </div>
 
-          <div class="card-footer text-center py-2 custom-card-foooter">
+          <div class="card-footer text-center py-2 custom-card-footer">
             {{ formatDate(match.Date) }}
           </div>
         </div>
@@ -131,6 +131,10 @@ export default {
   color: #FBEFEF;
 }
 
+.card{
+  background-color: #f8f9fa;
+}
+
 .back-button {
   position: absolute;
   top: 10px;
@@ -145,10 +149,9 @@ export default {
   height: 24px;
 }
 
-.custom-card-foooter{
+.custom-card-footer{
   background-color: #12997e;
-  color: white;
-  
+  color: #f8f9fa; 
 }
 
 h1, h2 {
