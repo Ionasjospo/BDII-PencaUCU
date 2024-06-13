@@ -1,24 +1,37 @@
 <template>
-  <div class="login-container">
-    <img :src="logo" alt="UCU Logo" class="logo" />
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h2 class="text-center text-dark mt-5">PENCA UCU</h2>
+        <div class="text-center mb-5 text-dark">Login</div>
+        <div class="card my-5">
 
-    <div class="login-frame">
-      <h1>Welcome to the penca of the copa america 2024</h1>
+          <form class="card-body cardbody-color p-lg-5" @submit.prevent="login">
 
-      <div class="login-fields">
-        <div class="field">
-          <img :src="usernameIcon" alt="Username Icon" class="icon" />
-          <input type="text" v-model="username" placeholder="Username" />
+            <div class="text-center">
+              <img src="../assets/copa_america_logo.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                width="200px" alt="profile">
+            </div>
+
+            <div class="mb-3">
+              <input type="text" class="form-control" id="Username" aria-describedby="emailHelp"
+              v-model="username" placeholder="Username">
+            </div>
+            <div class="mb-3">
+              <input type="password" class="form-control" id="password" 
+              v-model="password" placeholder="Password">
+            </div>
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button></div>
+            
+            <div id="emailHelp" class="form-text text-center mb-5 text-dark">Not
+              Registered? <a href="#" @click="switchToRegister" class="text-dark fw-bold"> Create an
+                Account</a>
+            </div>
+          </form>
         </div>
 
-        <div class="field">
-          <img :src="passwordIcon" alt="Password Icon" class="icon" />
-          <input type="password" v-model="password" placeholder="Password" />
-        </div>
-
-        <button @click="login">Login</button>
-
-        <p class="register-link" @click="switchToRegister">Don't have an account? Register</p>
       </div>
     </div>
   </div>
@@ -87,13 +100,37 @@ export default {
 </script>
 
 <style scoped>
+
+.btn-color{
+  background-color: #0e1c36;
+  color: #fff;
+  
+}
+
+.profile-image-pic{
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+}
+
+
+
+.cardbody-color{
+  background-color: #ebf2fa;
+}
+
+a{
+  text-decoration: none;
+}
+
+
+
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #2c3e50;
   color: white;
 }
 
@@ -104,7 +141,7 @@ export default {
 }
 
 .login-frame {
-  background-color: #34495e;
+  background-color: #4F6F52;
   padding: 20px;
   border-radius: 10px;
 }
