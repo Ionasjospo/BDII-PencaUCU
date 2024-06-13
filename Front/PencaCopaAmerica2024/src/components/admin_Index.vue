@@ -39,7 +39,7 @@
           </div>
           <div class="col-sm d-flex justify-content-center mb-3">
             <button @click="showResults" class="button-card">
-              <img :src="require('@/assets/Icons/prediction.png')" alt="Results Icon" class="icon"/>
+              <img :src="require('@/assets/Icons/checklist.png')" alt="Results Icon" class="icon"/>
               <span style = "font-weight: bold;">Results</span>
             </button>
           </div>

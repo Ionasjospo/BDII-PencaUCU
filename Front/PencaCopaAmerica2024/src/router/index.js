@@ -10,6 +10,9 @@ import AdminIndex from '../components/admin_Index.vue';
 import AdminFixture from '../components/admin_Fixture.vue';
 import AdminRanking from '../components/admin_Ranking.vue';
 import ProfilePage from '../components/Profile.vue';
+import RulesPage from '../components/Rules.vue';
+import Pricing from '../components/Pricing.vue';
+import FAQs from '../components/FAQs.vue';
 
 const routes = [
   { path: '/', component: LoginComponent },
@@ -22,7 +25,10 @@ const routes = [
   { path: '/adminIndex', component: AdminIndex, meta: { requiresAuth: true } },
   { path: '/adminFixture', component: AdminFixture, meta: { requiresAuth: true } },
   { path: '/adminRanking', component: AdminRanking, meta: { requiresAuth: true } },
-  { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } }
+  { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
+  { path: '/rules', component: RulesPage, meta: { requiresAuth: true } },
+  { path: '/pricing', component: Pricing, meta: { requiresAuth: true } },
+  { path: '/FAQs', component: FAQs, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({
