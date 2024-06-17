@@ -2,28 +2,28 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3">
-        <h2 class="text-center text-dark mt-5">PENCA UCU</h2>
-        <div class="text-center mb-5 text-dark">Login</div>
         <div class="card my-5">
 
-          <form class="card-body cardbody-color p-lg-5" @submit.prevent="login">
-
+          <form class="card-body cardbody-color" @submit.prevent="login">
             <div class="text-center">
               <img src="../assets/copa_america_logo.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
                 width="200px" alt="profile">
+              <h5 class="title">LOGIN</h5>
             </div>
+            
+            
 
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-center align-items-center">
               <input type="text" class="form-control" id="Username" aria-describedby="emailHelp"
               v-model="username" placeholder="Username">
             </div>
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-center align-items-center">
               <input type="password" class="form-control" id="password" 
               v-model="password" placeholder="Password">
             </div>
 
             <div class="text-center">
-              <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button></div>
+              <button type="submit" class="btn btn-color mb-2 w-25">Login</button></div>
             
             <div id="emailHelp" class="form-text text-center mb-5 text-dark">Not
               Registered? <a href="#" @click="switchToRegister" class="text-dark fw-bold"> Create an
@@ -100,11 +100,16 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  font-size: 300%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: rgb(5, 43, 66);
+}
 
 .btn-color{
   background-color: #0e1c36;
-  color: #fff;
-  
+  color: #fff; 
 }
 
 .profile-image-pic{
@@ -116,14 +121,12 @@ export default {
 
 
 .cardbody-color{
-  background-color: #ebf2fa;
+  background-color: #f8f9fa;
 }
 
 a{
   text-decoration: none;
 }
-
-
 
 .login-container {
   display: flex;

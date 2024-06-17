@@ -1,29 +1,120 @@
 <template>
-  <div>
-    <header>
-      <img :src="logo" alt="UCU Logo" class="logo" />
-      <h1>Register to Penca UCU</h1>
-    </header>
-    <main class="main-frame">
-      <div class="register-frame">
-        <h2>Register to Penca UCU</h2>
+  <div class="container">
+    <main class="d-flex justify-content-center">
+      <div class="card p-4 w-100" style="max-width: 600px;">
+        <div class="text-center">
+              <img src="../assets/copa_america_logo.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                width="200px" alt="profile">
+                <h5 class="title">REGISTER</h5>
+          </div>
         <form @submit.prevent="register">
-          <div class="form-field" v-for="(field, index) in formFields" :key="index">
-            <label :for="field.id">{{ field.label }}</label>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="first_name" class="form-label d-flex align-items-start">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                v-model="form.first_name"
+                placeholder="Atilio"
+                class="form-control"
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="last_name" class="form-label d-flex align-items-start">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                v-model="form.last_name"
+                placeholder="Garcia"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="username" class="form-label d-flex align-items-start ">Username</label>
+              <input
+                type="text"
+                id="username"
+                v-model="form.username"
+                placeholder="atilio1899"
+                class="form-control"
+              />
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="document" class="form-label d-flex align-items-start">Document</label>
+              <input
+                type="text"
+                id="document"
+                v-model="form.document"
+                placeholder="1405189-9"
+                class="form-control"
+              />
+            </div>            
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="password1" class="form-label d-flex align-items-start">Password</label>
+              <input
+                type="password"
+                id="password2"
+                v-model="form.password1"
+                placeholder=""
+                class="form-control"
+              />
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="password2" class="form-label d-flex align-items-start">Repit your password</label>
+              <input
+                type="password"
+                id="password2"
+                v-model="form.password2"
+                placeholder="Password"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          
+          <div class="mb-3">
+            <label for="email" class="form-label d-flex align-items-start">Email</label>
             <input
-              v-if="field.type !== 'combo'"
-              :type="field.type"
-              :id="field.id"
-              v-model="form[field.model]"
-              :placeholder="field.label"
+              type="email"
+              id="email"
+              v-model="form.email"
+              placeholder="atiliogarcia@gmail.com"
+              class="form-control"
             />
-            <select v-if="field.type === 'combo'" :id="field.id" v-model="form[field.model]">
-              <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
+          </div>
+          
+          
+          
+          <div class="mb-3">
+            <label for="country" class="form-label d-flex align-items-start">Predict champion</label>
+            <select id="champion_prediction" v-model="form.champion_prediction" class="form-select">
+              <option value="" disabled>Select your country</option>
+              <option v-for="country in countries" :key="country" :value="country">{{ country }}</option>
             </select>
           </div>
-          <button type="submit" class="button">Register</button>
+
+          <div class="mb-3">
+            <label for="country" class="form-label d-flex align-items-start">Predict second place</label>
+            <select id="second_prediction" v-model="form.second_prediction" class="form-select">
+              <option value="" disabled>Select your country</option>
+              <option v-for="country in countries" :key="country" :value="country">{{ country }}</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-color w-25">Register</button>
         </form>
-        <p class="login-link" @click="switchToLogin">Already have an account? Login</p>
+        <p class="text-center mt-3">
+          Already have an account?
+          <a href="#" @click.prevent="switchToLogin" class="already-account">Login</a>
+        </p>
       </div>
     </main>
   </div>
@@ -36,26 +127,18 @@ export default {
   name: 'RegisterPage',
   data() {
     return {
-      logo: require('@/assets/ucu_white_logo.png'),
       form: {
         document: '',
         first_name: '',
         last_name: '',
         email: '',
         username: '',
-        password: '',
+        password1: '',
+        password2: '',
         champion_prediction: '',
         second_prediction: ''
       },
-      formFields: [
-        { id: 'document', label: 'Document', type: 'text', model: 'document' },
-        { id: 'first_name', label: 'First Name', type: 'text', model: 'first_name' },
-        { id: 'last_name', label: 'Last Name', type: 'text', model: 'last_name' },
-        { id: 'email', label: 'Email', type: 'email', model: 'email' },
-        { id: 'username', label: 'Username', type: 'text', model: 'username' },
-        { id: 'password', label: 'Password', type: 'password', model: 'password' },
-        { id: 'champion_prediction', label: 'Champion Prediction', type: 'combo', model: 'champion_prediction', options: [] },
-        { id: 'second_prediction', label: 'Second Prediction', type: 'combo', model: 'second_prediction', options: [] }
+      countries: [
       ]
     }
   },
@@ -64,9 +147,8 @@ export default {
       try {
         const response = await axios.get('http://localhost:5000/countries')
         if (response.status === 200) {
-          const countries = response.data
-          this.formFields.find(f => f.model === 'champion_prediction').options = Object.keys(countries)
-          this.formFields.find(f => f.model === 'second_prediction').options = Object.keys(countries)
+          const countries_dict = response.data
+          this.countries = Object.keys(countries_dict)
         } else {
           alert('Failed to load countries')
         }
@@ -85,18 +167,28 @@ export default {
         first_name,
         last_name,
         email,
-        password,
+        password1,
+        password2,
         champion_prediction,
         second_prediction
       } = this.form
 
-      if (!document || !username || !first_name || !last_name || !email || !password || !champion_prediction || !second_prediction) {
+      if (!document || !username || !first_name || !last_name || !email || !password1 || !password2 || !champion_prediction || !second_prediction) {
         alert('Please fill in all fields')
         return
       }
 
+      if(champion_prediction == second_prediction){
+        alert("Champion and runner up must not be the same")
+      }
+
       if (!this.validateEmail(email)) {
         alert('Invalid email format')
+        return
+      }
+
+      if (password1 !== password2) {
+        alert('Passwords do not match')
         return
       }
 
@@ -107,7 +199,7 @@ export default {
           Name: first_name,
           Surname: last_name,
           Email: email,
-          Password: password,
+          Password: password1,
           Champion_Prediction: champion_prediction,
           Second_Prediction: second_prediction
         })
@@ -136,10 +228,39 @@ export default {
 </script>
 
 <style scoped>
-.logo {
-  width: 250px;
-  height: 150px;
-  margin: 10px auto;
+.title {
+  font-size: 300%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: rgb(5, 43, 66);
+}
+
+.already-account{
+  color: #0e1c36;
+  font-weight: bold;
+}
+
+.btn-color{
+  background-color: #0e1c36;
+  color: #fff; 
+}
+
+.card{
+  background-color: #f8f9fa;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
 }
 
 h1, h2 {
