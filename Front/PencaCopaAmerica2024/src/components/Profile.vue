@@ -1,34 +1,50 @@
 <template>
+  <header>
+    <div class="header-icons">
+        <div class="notification-icon" @click="showNotifications">
+          <img :src="require('@/assets/Icons/notification.png')" alt="Notification Icon" class="icon"/>
+          <span v-if="unreadNotificationsCount > 0" class="notification-badge">{{ unreadNotificationsCount }}</span>
+        </div>
+      <img :src="require('@/assets/Icons/settings.png')" alt="Settings Icon" class="icon"/>
+      <img :src="require('@/assets/Icons/logout.png')" alt="Logout Icon" class="icon" @click="logout"/>
+    </div>
+  </header>
+
+
   <div class="profile-container">
     <button @click="backToIndex" class="back-button">
       <img :src="require('@/assets/Icons/backarrow.png')" alt="Back to Index" />
     </button>
     <div class="profile-header">
       <img :src="profileImage" alt="Profile Picture" class="profile-picture"/>
-      <h1>Hello, {{ form.first_name }} {{ form.last_name }}!</h1>
+      <h5 class="title">Hello, {{ form.first_name }} {{ form.last_name }}!</h5>
     </div>
     <form @submit.prevent="updateProfile">
-      <div class="form-field">
-        <label for="username">Username</label>
+      <div class="mt-3 form-field">
+        <label for="username" class="form-label text-start">Username</label>
         <input type="text" id="username" v-model="form.username" readonly />
       </div>
-      <div class="form-field">
-        <label for="first_name">First Name</label>
-        <input type="text" id="first_name" v-model="form.first_name" />
+
+      <div class="row mt-3">
+        <div class="col-md-6 form-field">
+          <label for="first_name" class="form-label text-start">First Name</label>
+          <input type="text" id="first_name" v-model="form.first_name" />
+        </div>
+        <div class="col-md-6 form-field">
+          <label for="last_name" class="form-label text-start">Last Name</label>
+          <input type="text" id="last_name" v-model="form.last_name" />
+        </div>
       </div>
-      <div class="form-field">
-        <label for="last_name">Last Name</label>
-        <input type="text" id="last_name" v-model="form.last_name" />
-      </div>
-      <div class="form-field">
-        <label for="email">Email</label>
+
+      <div class="mt-3 form-field">
+        <label for="email" class="form-label text-start">Email</label>
         <input type="email" id="email" v-model="form.email" />
       </div>
-      <div class="form-field">
-        <label for="profile_picture">Profile Picture</label>
+      <div class="mt-3 form-field">
+        <label for="profile_picture" class="form-label text-start">Profile Picture</label>
         <input type="file" id="profile_picture" @change="onFileChange" />
       </div>
-      <button type="submit" class="button">Update Profile</button>
+      <button type="submit" class="btn btn-color mt-3">Update Profile</button>
     </form>
   </div>
 </template>
@@ -47,6 +63,9 @@ export default {
         profile_picture: null,
       },
       profileImage: require('@/assets/Icons/person.png'), 
+      showDropdown: false,
+      notifications: [],
+      unreadNotificationsCount: 0,
     };
   },
   methods: {
@@ -97,7 +116,8 @@ export default {
           this.form.last_name = userProfile.Surname;
           this.form.email = userProfile.Email;
           if (userProfile.Profile_Picture) {
-            this.profileImage = `http://localhost:5000/${userProfile.Profile_Picture}`; 
+            this.form.profile_picture = `..Back/${userProfile.Profile_Picture}`;
+            // alert(`userProfile_picture ${this.form.profile_picture}`);
           }
         } else {
           console.log('Failed to load user profile');
@@ -107,6 +127,34 @@ export default {
         console.log(`Error loading profile: ${error}`);
         alert(`Error loading profile: ${error}`);
       }
+    },
+    showNotifications() {
+      this.showDropdown = !this.showDropdown;
+      if (this.showDropdown) {
+        this.fetchNotifications();
+      }
+    },
+    async fetchNotifications() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/notifications', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.status === 200) {
+          this.notifications = response.data;
+          this.unreadNotificationsCount = this.notifications.length;
+        } else {
+          alert('Failed to load notifications');
+        }
+      } catch (error) {
+        alert(`Failed to load notifications: ${error}`);
+      }
+    },
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/');
     },
     backToIndex() {
       this.$router.push('/index');
@@ -119,6 +167,18 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  font-size: 300%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: rgb(5, 43, 66);
+}
+
+.btn-color{
+  background-color: #0e1c36;
+  color: #fff; 
+}
+
 .profile-container {
   max-width: 600px;
   margin: auto;
@@ -143,19 +203,80 @@ export default {
   margin-bottom: 10px;
 }
 
+.header-icons .icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.header-icons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.notification-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  width: 300px;
+  color: black;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notification-dropdown ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.notification-dropdown li {
+  padding: 10px;
+  border-bottom: 1px solid #cccccc57;
+}
+
+.notification-dropdown li:hover {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f3f3f3cf;
+  border-bottom: 1px solid #cccccc57;
+}
+
+.notification-dropdown li:last-child {
+  border-bottom: none;
+}
+
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
 .form-field {
-  margin-bottom: 15px;
-  text-align: left;
+  color: black;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
   font-weight: bold;
 }
 
