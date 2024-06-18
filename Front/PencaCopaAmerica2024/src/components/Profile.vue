@@ -1,5 +1,8 @@
 <template>
   <header>
+    <button @click="backToIndex" class="back-button">
+      <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+    </button>
     <div class="header-icons">
         <div class="notification-icon" @click="showNotifications">
           <img :src="require('@/assets/Icons/notification.png')" alt="Notification Icon" class="icon"/>
@@ -12,9 +15,6 @@
 
 
   <div class="profile-container">
-    <button @click="backToIndex" class="back-button">
-      <img :src="require('@/assets/Icons/backarrow.png')" alt="Back to Index" />
-    </button>
     <div class="profile-header">
       <img :src="profileImage" alt="Profile Picture" class="profile-picture"/>
       <h5 class="title">Hello, {{ form.first_name }} {{ form.last_name }}!</h5>
@@ -96,8 +96,8 @@ export default {
         alert(`Error updating profile: ${error}`);
       }
     },
-    onFileChange(event) {
-      const file = event.target.files[0];
+    onFileChange() {
+      const file = this.$refs.profile_picture.files[0];
       this.form.profile_picture = file;
       this.profileImage = URL.createObjectURL(file); // Update profile image preview
     },
@@ -116,8 +116,7 @@ export default {
           this.form.last_name = userProfile.Surname;
           this.form.email = userProfile.Email;
           if (userProfile.Profile_Picture) {
-            this.form.profile_picture = `..Back/${userProfile.Profile_Picture}`;
-            // alert(`userProfile_picture ${this.form.profile_picture}`);
+            this.profileImage = `http://localhost:5000${userProfile.Profile_Picture}`;
           }
         } else {
           console.log('Failed to load user profile');
@@ -179,6 +178,26 @@ export default {
   color: #fff; 
 }
 
+.btn-color:hover{
+  background-color: #12997e;
+  color: #fff; 
+}
+
+.back-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+
 .profile-container {
   max-width: 600px;
   margin: auto;
@@ -201,6 +220,7 @@ export default {
   height: 100px;
   border-radius: 50%;
   margin-bottom: 10px;
+  color: #000;
 }
 
 .header-icons .icon {
