@@ -180,6 +180,8 @@ def update_profile(current_user):
         return jsonify({"message": "Profile updated successfully"}), 200
     else:
         return jsonify({"error": "Failed to update profile"}), 500
+    
+    
 
 @app.route('/ranking', methods=['GET'])
 @token_required

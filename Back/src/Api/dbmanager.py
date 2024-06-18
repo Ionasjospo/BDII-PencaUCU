@@ -70,11 +70,12 @@ def update_user(update_data):
             profile_picture = %s
         WHERE username = %s
         """
+    
         db.execute_query(query, (
             update_data['first_name'],
             update_data['last_name'],
             update_data['email'],
-            update_data.get('profile_picture', None),
+            update_data['Profile_Picture'],
             update_data['username']
         ))
         return True
