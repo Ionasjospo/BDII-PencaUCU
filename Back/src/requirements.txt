@@ -1,6 +1,7 @@
 requests
-customtkinter
-pillow
 mysql-connector-python
 bcrypt
 flask
+flask_cors
+jwt
+schedule
