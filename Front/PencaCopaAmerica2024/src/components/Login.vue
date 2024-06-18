@@ -112,6 +112,11 @@ export default {
   color: #fff; 
 }
 
+.btn-color:hover{
+  background-color: #12997e;
+  color: #fff; 
+}
+
 .profile-image-pic{
   height: 200px;
   width: 200px;

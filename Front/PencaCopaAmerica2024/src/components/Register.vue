@@ -245,6 +245,11 @@ export default {
   color: #fff; 
 }
 
+.btn-color:hover{
+  background-color: #12997e;
+  color: #fff; 
+}
+
 .card{
   background-color: #f8f9fa;
 }
