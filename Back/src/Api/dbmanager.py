@@ -205,6 +205,25 @@ def insert_matches(matches_updated_data):
         print(f"Error inserting the match results: {e}")
         return False
 
+def update_winner_matches():
+    try:
+        query = """
+            UPDATE FOOTBALL_MATCH
+            SET id_winner = CASE
+                WHEN score_home_country > score_away_country THEN id_home_country
+                WHEN score_home_country < score_away_country THEN id_away_country
+                WHEN score_home_country = score_away_country THEN 0
+            END
+            WHERE id_winner IS NULL
+            AND score_home_country IS NOT NULL
+            AND score_away_country IS NOT NULL;
+        """
+        db.execute_query(query, None)
+        return True
+    except Exception as e:
+        print(f"Error updating winner matches: {e}")
+        return False
+
 def update_predictions_points():
     try:
         exact_results_query = """
@@ -234,7 +253,9 @@ def update_predictions_points():
                         WHERE FM.id_winner = CASE
                                                 WHEN P.score_home_country > P.score_away_country THEN P.id_home_country
                                                 WHEN P.score_home_country < P.score_away_country THEN P.id_away_country
+                                                ELSE 0
                                             END
+                            AND !(FM.score_home_country = P.score_home_country AND FM.score_away_country = P.score_away_country)
                     )
                     UPDATE PREDICTION
                     SET points = 2
