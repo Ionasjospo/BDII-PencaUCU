@@ -120,6 +120,28 @@ def matches(current_user):
         return '', 204
     else:
         return jsonify({"error": "No matches found"}), 404
+    
+@app.route('/match', methods=['GET'])
+@token_required
+def get_match_by_id(current_user):
+    match_id = request.args.get('id')
+    match = dbmanager.get_match_by_id(current_user, match_id) 
+    if match:
+        return jsonify(match), 200
+    else:
+        return jsonify({"error": "Match not found"}), 404
+
+
+@app.route('/stats', methods=['GET'])
+@token_required
+def get_stats(current_user):
+    match_id = request.args.get('id')
+    stats = dbmanager.get_stats(current_user, match_id)
+    if stats:
+        return jsonify(stats), 200
+    else:
+        return jsonify({"error": "No stats found"}), 404
+    
 
 @app.route('/predictions', methods=['POST'])
 @token_required
@@ -219,7 +241,7 @@ def get_notifications(current_user):
     if notifications:
         return jsonify(notifications), 200
     else:
-        return jsonify([]), 200  
+        return jsonify([]), 200     
 
 
 def notify_users(stage_name):

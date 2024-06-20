@@ -12,5 +12,5 @@ if __name__ == "__main__":
         # Mantener el script en ejecución para mantener la API en funcionamiento
         api_process.wait()
     except KeyboardInterrupt:
-        # Terminar el proceso de la API al recibir una interrupción del teclado (Ctrl+C)
+        # Terminar el proceso de la API al recibir una interrupción del teclado (Ctrl+C)    
         api_process.terminate()

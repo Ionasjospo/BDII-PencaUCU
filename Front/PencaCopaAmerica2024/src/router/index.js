@@ -3,6 +3,7 @@ import LoginComponent from '../components/Login.vue';
 import IndexPage from '../components/Index.vue';
 import FixturePage from '../components/Fixture.vue';
 import PredictPage from '../components/Predict.vue';
+import PredictStatsPage from '../components/Predict_Stats.vue';
 import RankingPage from '../components/Ranking.vue';
 import RegisterPage from '../components/Register.vue';
 import AdminResults from '../components/admin_results.vue';
@@ -19,6 +20,7 @@ const routes = [
   { path: '/index', component: IndexPage, meta: { requiresAuth: true } },
   { path: '/fixture', component: FixturePage, meta: { requiresAuth: true } },
   { path: '/predict', component: PredictPage, meta: { requiresAuth: true } },
+  { path: '/predictStats/:id', component: PredictStatsPage, meta: { requiresAuth: true } },
   { path: '/ranking', component: RankingPage, meta: { requiresAuth: true } },
   { path: '/register', component: RegisterPage },
   { path: '/adminResults', component: AdminResults, meta: { requiresAuth: true } },

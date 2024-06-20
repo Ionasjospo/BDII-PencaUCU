@@ -345,4 +345,56 @@ def get_notifications(user_id):
     notifications = [{"id_notification": row[0], "message": row[1]} for row in results]
     return notifications
 
+def get_match_by_id(user, match_id):
+    id_user = get_user_id(user)
+    query = """
+        SELECT id_match, date_match, home.name AS home_team, away.name AS away_team
+        FROM FOOTBALL_MATCH
+        INNER JOIN COUNTRY home ON FOOTBALL_MATCH.id_home_country = home.id_country
+        INNER JOIN COUNTRY away ON FOOTBALL_MATCH.id_away_country = away.id_country
+        WHERE id_match = %s
+    """
+    result = db.fetch_results(query, (match_id,))
+    match = []
+    for row in result:
+        match = {
+            "id_match": row[0],
+            "Date": row[1],
+            "Home team": row[2],
+            "Away team": row[3]
+        }
+        return match
+    return None
+
+def get_stats(user,match_id):
+    user_id = get_user_id(user)
+    query = """
+                SELECT
+                ROUND((SUM(CASE WHEN score_home_country > score_away_country THEN 1 ELSE 0 END) * 100.0 / COUNT(*)),0) as home_win,
+                ROUND((SUM(CASE WHEN score_away_country > score_home_country THEN 1 ELSE 0 END) * 100.0 / COUNT(*)),0) as away_win,
+                ROUND((SUM(CASE WHEN score_home_country = score_away_country THEN 1 ELSE 0 END) * 100.0 / COUNT(*)),0) as tie
+                FROM
+                PREDICTION
+                WHERE
+                id_match = %s
+                AND id_user != %s
+            """
+    result = db.fetch_results(query, (match_id,user_id))
+    stats = []
+    for row in result:
+        stat = {
+            "Home_Win": row[0],
+            "Away_Win": row[1],
+            "Tie": row[2]
+        }
+        stats.append(stat)
+    if stats:
+        return stats 
+    return None
+        
+
+
+
+
+
 
