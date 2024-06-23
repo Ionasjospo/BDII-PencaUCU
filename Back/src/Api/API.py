@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')  # Changed to standard header
+        token = request.headers.get('Authorization') 
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
         try:
@@ -115,13 +115,22 @@ def matches(current_user):
     else:
         matches = dbmanager.all_matches()
 
+    now = datetime.now()
+
     if show_predictable:
-        now = datetime.now()
         matches = [match for match in matches if match['Date'] > now + timedelta(minutes=30)]
 
-    if (current_user == "admin" and results_admin):
-        now = datetime.now()
-        matches = [match for match in matches if match['Date'] < now]
+    if current_user == "admin" and results_admin:
+            matches = [match for match in matches if match['Date'] < now - timedelta(minutes=120)]
+            for match in matches:
+                results = dbmanager.get_match_results(match['id_match'])
+                if results:
+                    match['home_score'] = results['home_score']
+                    match['away_score'] = results['away_score']
+                else:
+                    match['home_score'] = None
+                    match['away_score'] = None
+
     else:
         predictions = dbmanager.get_user_predictions(current_user)
         for match in matches:
@@ -140,6 +149,28 @@ def matches(current_user):
         return '', 204
     else:
         return jsonify({"error": "No matches found"}), 404
+    
+@app.route('/match', methods=['GET'])
+@token_required
+def get_match_by_id(current_user):
+    match_id = request.args.get('id')
+    match = dbmanager.get_match_by_id(current_user, match_id) 
+    if match:
+        return jsonify(match), 200
+    else:
+        return jsonify({"error": "Match not found"}), 404
+
+
+@app.route('/stats', methods=['GET'])
+@token_required
+def get_stats(current_user):
+    match_id = request.args.get('id')
+    stats = dbmanager.get_stats(current_user, match_id)
+    if stats:
+        return jsonify(stats), 200
+    else:
+        return jsonify({"error": "No stats found"}), 404
+    
 
 @app.route('/predictions', methods=['POST'])
 @token_required
@@ -170,6 +201,8 @@ def submit_matches(current_user):
 
     success = dbmanager.insert_matches(matches_updated)
     if success:
+        successWinner = dbmanager.update_winner_matches(matches_updated)
+    if successWinner:
         dbmanager.update_predictions_points()
         dbmanager.update_user_points()
         return jsonify({"message": "Predictions submitted successfully"}), 200
@@ -237,7 +270,7 @@ def get_notifications(current_user):
     if notifications:
         return jsonify(notifications), 200
     else:
-        return jsonify([]), 200  
+        return jsonify([]), 200     
 
 
 def notify_users(stage_name):

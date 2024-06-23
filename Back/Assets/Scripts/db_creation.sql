@@ -37,8 +37,8 @@ CREATE TABLE FOOTBALL_MATCH (
     id_stage INT NOT NULL,
     id_home_country INT NOT NULL,
     id_away_country INT NOT NULL,
-    score_home_country INT NOT NULL,
-    score_away_country INT NOT NULL,
+    score_home_country INT,
+    score_away_country INT,
     id_winner INT
 );
 
@@ -71,18 +71,6 @@ CREATE TABLE NOTIFICATION (
 
 ALTER TABLE NOTIFICATION ADD FOREIGN KEY (id_user) REFERENCES USER(id_student);
 
-
-
-
-#ver si se puede hacer un trigger para que se actualicen los puntos de los usuarios cuando se actualiza la tabla de partidos
-#CREATE TRIGGER update_points AFTER UPDATE ON FOOTBALL_MATCH
-#FOR EACH ROW
-#BEGIN
-#    UPDATE USER
-#    SET total_points = total_points + 1
-#    WHERE id_champion = id_winner OR id_sub_champion = id_winner;
-#END;
-#DELIMITER 1;
 CREATE TABLE ADMIN (
     id_admin INT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -136,29 +124,29 @@ INSERT INTO STAGE(name) VALUES
 #Partidos de la primera ronda
 INSERT INTO FOOTBALL_MATCH(date_match, id_stage, id_home_country, id_away_country, score_home_country, score_away_country, id_winner)
     VALUES
-        ('2024-06-20 21:00', 1, 1, 4, 0, 0, NULL),
-        ('2024-06-21 21:00', 1, 3, 2, 0, 0, NULL),
-        ('2024-06-22 19:00', 1, 6, 7, 0, 0, NULL),
-        ('2024-06-22 22:00', 1, 5, 8, 0, 0, NULL),
-        ('2024-06-23 19:00', 1, 10, 12, 0, 0, NULL),
-        ('2024-06-23 22:00', 1, 9, 11, 0, 0, NULL),
-        ('2024-06-24 19:00', 1, 14, 15, 0, 0, NULL),
-        ('2024-06-24 22:00', 1, 13, 16, 0, 0, NULL),
-        ('2024-06-25 19:00', 1, 3, 4, 0, 0, NULL),
-        ('2024-06-25 22:00', 1, 2, 1, 0, 0, NULL),
-        ('2024-06-26 19:00', 1, 6, 8, 0, 0, NULL),
-        ('2024-06-26 22:00', 1, 7, 5, 0, 0, NULL),
-        ('2024-06-27 19:00', 1, 11, 10, 0, 0, NULL),
-        ('2024-06-27 22:00', 1, 9, 12, 0, 0, NULL),
-        ('2024-06-28 19:00', 1, 14, 16, 0, 0, NULL),
-        ('2024-06-28 22:00', 1, 15, 13, 0, 0, NULL),
-        ('2024-06-29 21:00', 1, 1, 3, 0, 0, NULL),
-        ('2024-06-29 21:00', 1, 4, 2, 0, 0, NULL),
-        ('2024-06-30 21:00', 1, 5, 6, 0, 0, NULL),
-        ('2024-06-30 21:00', 1, 8, 7, 0, 0, NULL),
-        ('2024-07-01 22:00', 1, 10, 9, 0, 0, NULL),
-        ('2024-07-01 22:00', 1, 12, 11, 0, 0, NULL),
-        ('2024-07-02 22:00', 1, 13, 14, 0, 0, NULL),
-        ('2024-07-02 22:00', 1, 16, 15, 0, 0, NULL);
+        ('2024-06-20 21:00', 1, 1, 4, NULL, NULL, NULL),
+        ('2024-06-21 21:00', 1, 3, 2, NULL, NULL, NULL),
+        ('2024-06-22 19:00', 1, 6, 7, NULL, NULL, NULL),
+        ('2024-06-22 22:00', 1, 5, 8, NULL, NULL, NULL),
+        ('2024-06-23 19:00', 1, 10, 12, NULL, NULL, NULL),
+        ('2024-06-23 22:00', 1, 9, 11, NULL, NULL, NULL),
+        ('2024-06-24 19:00', 1, 14, 15, NULL, NULL, NULL),
+        ('2024-06-24 22:00', 1, 13, 16, NULL, NULL, NULL),
+        ('2024-06-25 19:00', 1, 3, 4, NULL, NULL, NULL),
+        ('2024-06-25 22:00', 1, 2, 1, NULL, NULL, NULL),
+        ('2024-06-26 19:00', 1, 6, 8, NULL, NULL, NULL),
+        ('2024-06-26 22:00', 1, 7, 5, NULL, NULL, NULL),
+        ('2024-06-27 19:00', 1, 11, 10, NULL, NULL, NULL),
+        ('2024-06-27 22:00', 1, 9, 12, NULL, NULL, NULL),
+        ('2024-06-28 19:00', 1, 14, 16, NULL, NULL, NULL),
+        ('2024-06-28 22:00', 1, 15, 13, NULL, NULL, NULL),
+        ('2024-06-29 21:00', 1, 1, 3, NULL, NULL, NULL),
+        ('2024-06-29 21:00', 1, 4, 2, NULL, NULL, NULL),
+        ('2024-06-30 21:00', 1, 5, 6, NULL, NULL, NULL),
+        ('2024-06-30 21:00', 1, 8, 7, NULL, NULL, NULL),
+        ('2024-07-01 22:00', 1, 10, 9, NULL, NULL, NULL),
+        ('2024-07-01 22:00', 1, 12, 11, NULL, NULL, NULL),
+        ('2024-07-02 22:00', 1, 13, 14, NULL, NULL, NULL),
+        ('2024-07-02 22:00', 1, 16, 15, NULL, NULL, NULL);
 
 

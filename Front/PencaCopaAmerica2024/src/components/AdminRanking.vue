@@ -1,38 +1,39 @@
 <template>
-    <div>
-      <header>
-        <img :src="logo" alt="UCU Logo" class="logo" />
-        <h1>Ranking</h1>
-      </header>
-      <main class="main-frame">
-        <div class="button-frame">
-          <button @click="backToIndex" class="button">Back to Index</button>
-        </div>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Points</th>
-                <th>Champion</th>
-                <th>Sub Champion</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(entry, index) in ranking" :key="entry.Username" :class="{ 'logged-in-user': entry.Username === loggedInUsername }">
-                <td>{{ index + 1 }}</td>
-                <td>{{ entry.Username }}</td>
-                <td>{{ entry['Total Points'] }}</td>
-                <td><img :src="flags[entry.Champion]" alt="Champion Flag" class="flag" /></td>
-                <td><img :src="flags[entry['Sub Champion']]" alt="Sub Champion Flag" class="flag" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
-    </div>
-  </template>
+  <div>
+    <header>
+      <button @click="backToIndex" class="back-button">
+        <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+      </button>
+      <h1 class="title">RANKING</h1>
+    </header>
+    
+    <main class="main-frame">
+      <div class="container mt-3">
+        <table class="table table-striped table-hover table-bordered rounded-lg">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Username</th>
+              <th scope="col">Points</th>
+              <th scope="col">Champion</th>
+              <th scope="col">Sub Champion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(entry, index) in ranking" :key="entry.Username" :class="{ 'table-primary': entry.Username === loggedInUsername }">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ entry.Username }}</td>
+              <td>{{ entry['Total Points'] }}</td>
+              <td><img :src="flags[entry.Champion]" alt="Champion Flag" class="flag" /></td>
+              <td><img :src="flags[entry['Sub Champion']]" alt="Sub Champion Flag" class="flag" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
@@ -104,61 +105,84 @@
   </script>
   
   <style scoped>
-  .logo {
-    width: 250px;
-    height: 150px;
-    margin: 10px auto;
-  }
-  
-  h1 {
-    text-align: center;
-  }
-  
-  .main-frame {
-    padding: 20px;
-  }
-  
-  .button-frame {
-    text-align: center;
-    margin: 20px;
-  }
-  
-  .button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #3498db; 
-    color: white;
-    cursor: pointer;
-  }
-  
-  .table-container {
-    width: 100%;
-    overflow-x: auto;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 1em;
-    min-width: 400px;
-  }
-  
-  th, td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    text-align: center;
-  }
-  
-  th {
-    background-color: #3498db; 
-    color: white;
-  }
-  
-  .flag {
-    width: 30px;
-    height: 20px;
-  }
-  </style>
-  
+.main-frame {
+  background: transparent
+}
+
+.table {
+  border-radius: 7px;   
+  overflow: hidden;
+}
+
+.flag {
+  width: 30px;
+  height: 20px;
+}
+
+.table-primary {
+  background-color: #b8daff;
+}
+
+header {
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  position: relative;
+}
+.title {
+  font-size: 700%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: #FBEFEF;
+}
+
+.back-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent; 
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+
+
+.button-frame {
+  text-align: center;
+  margin: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #3498db; 
+  color: white;
+  cursor: pointer;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1em;
+  min-width: 400px;
+}
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color: #3498db; 
+  color: white;
+}
+</style>
