@@ -1,50 +1,68 @@
 <template>
-    <div>
-      <header>
-        <img :src="logo" alt="UCU Logo" class="logo" />
-        <h1>Upload the final football match results</h1>
-      </header>
-      <main class="main-frame">
-        <div class="button-frame">
-          <button @click="submitMatches" class="button">Submit</button>
-          <button @click="backToIndex" class="button">Back to Index</button>
-        </div>
-        <div class="scrollable-frame">
-          <div v-for="(matches, date) in groupedMatches" :key="date">
-            <h2>{{ date }}</h2>
-            <div v-for="match in matches" :key="match.id_match" class="match-frame">
-              <div class="match-inner-frame">
-                <span class="time">{{ formatTime(match.Date) }}</span>
-                <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag" />
-                <span class="team">{{ match['Home team'] }} [</span>
-                <input type="number" v-model.number="matchesData[match.id_match].home_score" class="score" />
-                <span class="team">] Vs [</span>
-                <input type="number" v-model.number="matchesData[match.id_match].away_score" class="score" />
-                <span class="team">] {{ match['Away team'] }}</span>
-                <img :src="getFlagImage(match['Away team'])" alt="Away Flag" class="flag" />
-              </div>
-            </div>
+  <header>
+    <button @click="backToIndex" class="back-button">
+      <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
+    </button>
+    <h1 class="title">RESULTS</h1>
+  </header>
+
+  <div class="container">
+    <div v-for="match in matches" :key="match.id_match" class="mb-4 position-relative">
+      <div class="card">
+        <div class="card-body row align-items-center">
+          <div class="col-4 d-flex justify-content-center align-items-center">
+            <img :src="getFlagImage(match['Home team'])" alt="Home Flag" class="flag me-2" />
+            <p class="team mb-0">{{ match['Home team'] }}</p>
+          </div>
+
+          <div class="col-1 text-center">
+            <input type="number" v-model.number="matchesData[match.id_match].home_score" class="form-control score w-15" min="0" />
+          </div>
+
+          <div class="col-2 text-center">
+            <p class="team mb-0">vs</p>
+          </div>
+
+          <div class="col-1 text-center">
+            <input type="number" v-model.number="matchesData[match.id_match].away_score" class="form-control score w-15" min="0" />
+          </div>
+
+          <div class="col-4 d-flex justify-content-center align-items-center">
+            <p class="team mb-0 me-2">{{ match['Away team'] }}</p>
+            <img :src="getFlagImage(match['Away team'])" alt="Away Flag" class="flag" />
           </div>
         </div>
-      </main>
+
+        <div class="card-footer text-center py-2 custom-card-footer">
+          {{ formatDate(match.Date) }}
+        </div>
+      </div>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios'
-  
-  export default {
+
+    <div class="row">
+      <div class="col-12">
+        <button @click="submitMatches" class="button">Submit Results</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+import { reactive } from 'vue'
+
+export default {
   name: 'AdminResults',
   data() {
     return {
-      logo: require('@/assets/ucu_white_logo.png'),
       matches: [],
-      matchesData: {}
+      matchesData: reactive({})
     }
   },
   computed: {
     groupedMatches() {
-      return this.matches.reduce((groups, match) => {
+      const sortedMatches = [...this.matches].sort((a, b) => new Date(a.Date) - new Date(b.Date))
+      return sortedMatches.reduce((groups, match) => {
         const date = new Date(match.Date.replace(' GMT', '')).toISOString().split('T')[0]
         if (!groups[date]) {
           groups[date] = []
@@ -55,9 +73,6 @@
     }
   },
   methods: {
-    backToIndex() {
-        this.$router.push('/adminIndex');
-      },
     async fetchMatches() {
       try {
         const token = localStorage.getItem('token')
@@ -68,15 +83,8 @@
         })
         if (response.status === 200) {
           this.matches = response.data
-          this.matches.forEach(match => {
-            this.matchesData[match.id_match] = {
-              home_score: match.home_score ?? null,
-              away_score: match.away_score ?? null,
-              id_home_country: match.id_home_country,
-              id_away_country: match.id_away_country
-            }
-          })
-        }else if (response.status === 204) {
+          this.initializeMatchesData()
+        } else if (response.status === 204) {
           alert('No matches to submit results.')
         } else {
           alert('Failed to fetch matches')
@@ -85,9 +93,29 @@
         alert(`Failed to fetch matches: ${error}`)
       }
     },
+    initializeMatchesData() {
+      this.matches.forEach(match => {
+        this.matchesData[match.id_match] = {
+          home_score: match.home_score !== null ? match.home_score : '',
+          away_score: match.away_score !== null ? match.away_score : '',
+          id_home_country: match.id_home_country,
+          id_away_country: match.id_away_country
+        }
+      })
+    },
     formatTime(date) {
       const matchDatetime = new Date(date.replace(' GMT', ''))
       return matchDatetime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    },
+    formatDate(date) {
+      const matchDatetime = new Date(date.replace(' GMT', ''))
+
+      const day = matchDatetime.getDate()
+      const month = matchDatetime.toLocaleString('es-ES', { month: 'long' })
+      const hours = matchDatetime.getHours()
+      const minutes = matchDatetime.getMinutes().toString().padStart(2, '0')
+
+      return `${day} de ${month.charAt(0).toUpperCase() + month.slice(1)} | ${hours}:${minutes} hs`
     },
     getFlagImage(team) {
       try {
@@ -97,110 +125,129 @@
       }
     },
     async submitMatches() {
-      const matchesUpdatedData = {
-        matches_updated: []
-      }
-  
-      for (const matchId in this.matchesData) {
-        const { home_score, away_score, id_home_country, id_away_country } = this.matchesData[matchId]
-        if (home_score >= 0 && away_score >= 0 && id_home_country && id_away_country) {
-          matchesUpdatedData.matches_updated.push({
-            id_match: matchId,
-            home_score,
-            away_score
-          })
-        }
-      }
-  
-      if (matchesUpdatedData.matches_updated.length > 0) {
-        try {
-          const token = localStorage.getItem('token')
-          const response = await axios.post('http://localhost:5000/submit_matches', matchesUpdatedData, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          })
-          if (response.status === 200) {
-            alert('Predictions submitted successfully')
-          } else {
-            alert('Failed to submit predictions')
+      try {
+        const token = localStorage.getItem('token')
+        const formattedMatches = Object.keys(this.matchesData).map(matchId => ({
+          id_match: parseInt(matchId),
+          home_score: this.matchesData[matchId].home_score,
+          away_score: this.matchesData[matchId].away_score,
+          id_home_country: this.matchesData[matchId].id_home_country,
+          id_away_country: this.matchesData[matchId].id_away_country
+        }))
+
+        const response = await axios.post('http://localhost:5000/submit_matches', {
+          matches_updated: formattedMatches
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
-        } catch (error) {
-          alert(`Failed to submit predictions: ${error}`)
+        })
+
+        if (response.status === 200) {
+          alert('Results submitted successfully')
+        } else {
+          alert('Failed to submit results')
         }
-      } else {
-        alert('No valid predictions to submit')
+      } catch (error) {
+        alert(`Failed to submit results: ${error}`)
       }
+    },
+    backToIndex() {
+      this.$router.push('/adminIndex')
     }
   },
   mounted() {
     this.fetchMatches()
   }
-  }
-  </script>
-  
-  <style scoped>
-  .logo {
-  width: 250px;
-  height: 150px;
-  margin: 10px auto;
-  }
-  
-  h1 {
-  text-align: center;
-  }
-  
-  .main-frame {
-  padding: 20px;
-  }
-  
-  .button-frame {
-  text-align: center;
-  margin: 20px;
-  }
-  
-  .button {
+}
+</script>
+
+<style scoped>
+.title {
+  font-size: 700%;
+  font-family: 'Impact', sans-serif;
+  margin: 10px;
+  color: #FBEFEF;
+}
+
+.button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   background-color: #1abc9c;
   color: white;
   cursor: pointer;
-  margin: 5px;
-  }
-  
-  .scrollable-frame {
+  margin: 10px;
+}
+
+input {
+  background-color: #FBEFEF;
+}
+
+.custom-card-footer {
+  background-color: #12997e;
+  color: white;
+}
+
+.card {
+  background-color: #FBEFEF;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px;
+  background-color: transparent;
+  border: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.scrollable-frame {
   max-height: 70vh;
   overflow-y: auto;
   padding: 20px;
-  }
-  
-  .match-frame {
-  margin-bottom: 20px;
-  }
-  
-  .match-inner-frame {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  }
-  
-  .flag {
+}
+
+.flag {
   width: 30px;
   height: 20px;
-  }
-  
-  .team {
+}
+
+.team {
   font-weight: bold;
-  }
-  
-  .time {
+}
+
+.time {
   font-style: italic;
-  }
-  
-  .score {
-  width: 50px;
+}
+
+.score {
   text-align: center;
-  }
-  </style>
-  
+}
+
+.details-button {
+  position: absolute;
+  top: 10px;
+  right: 10px; /* Cambiado de left a right */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+.details-button:hover {
+  transform: scale(1.1);
+}
+
+.details-button img {
+  width: 24px;
+  height: 24px;
+}
+</style>

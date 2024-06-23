@@ -136,6 +136,19 @@ def all_matches():
         matches.append(match)
     return matches
 
+def get_match_results(match_id):
+    query = """
+        SELECT score_home_country, score_away_country
+        FROM FOOTBALL_MATCH
+        WHERE id_match = %s
+    """
+    results = db.fetch_results(query, (match_id,))
+    if results:
+        return {
+            "home_score": results[0][0],
+            "away_score": results[0][1]
+        }
+    return None
 
 def get_user_predictions(username):
     id_user = get_user_id(username)
