@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')  # Changed to standard header
+        token = request.headers.get('Authorization') 
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
         try:
@@ -94,13 +94,21 @@ def matches(current_user):
     else:
         matches = dbmanager.all_matches()
 
+    now = datetime.now()
+
     if show_predictable:
-        now = datetime.now()
         matches = [match for match in matches if match['Date'] > now + timedelta(minutes=30)]
 
-    if (current_user == "admin" and results_admin):
-        now = datetime.now()
-        matches = [match for match in matches if match['Date'] < now]
+    if current_user == "admin" and results_admin:
+            matches = [match for match in matches if match['Date'] < now - timedelta(minutes=120)]
+            for match in matches:
+                results = dbmanager.get_match_results(match['id_match'])
+                if results:
+                    match['home_score'] = results['home_score']
+                    match['away_score'] = results['away_score']
+                else:
+                    match['home_score'] = None
+                    match['away_score'] = None
 
     else:
         predictions = dbmanager.get_user_predictions(current_user)

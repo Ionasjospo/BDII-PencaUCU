@@ -117,9 +117,7 @@ export default {
     },
     goToPredictions(notification) {
       this.$router.push('/predict');
-      // Lógica para marcar la notificación como leída
       console.log('Notification clicked:', notification);
-      // Aquí puedes implementar la actualización del estado de la notificación en el backend
     }
   },
   mounted() {
