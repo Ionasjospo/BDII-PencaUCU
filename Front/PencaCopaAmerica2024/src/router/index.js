@@ -5,14 +5,15 @@ import FixturePage from '../components/Fixture.vue';
 import PredictPage from '../components/Predict.vue';
 import RankingPage from '../components/Ranking.vue';
 import RegisterPage from '../components/Register.vue';
-import AdminResults from '../components/admin_results.vue';
-import AdminIndex from '../components/admin_Index.vue';
-import AdminFixture from '../components/admin_Fixture.vue';
-import AdminRanking from '../components/admin_Ranking.vue';
+import AdminResults from '../components/AdminResults.vue';
+import AdminIndex from '../components/AdminIndex.vue';
+import AdminFixture from '../components/AdminFixture.vue';
+import AdminRanking from '../components/AdminRanking.vue';
 import ProfilePage from '../components/Profile.vue';
 import RulesPage from '../components/Rules.vue';
 import Pricing from '../components/Pricing.vue';
 import FAQs from '../components/FAQs.vue';
+import UserPoint from '../components/UserPoints.vue';
 
 const routes = [
   { path: '/', component: LoginComponent },
@@ -28,7 +29,8 @@ const routes = [
   { path: '/profile', component: ProfilePage, meta: { requiresAuth: true } },
   { path: '/rules', component: RulesPage, meta: { requiresAuth: true } },
   { path: '/pricing', component: Pricing, meta: { requiresAuth: true } },
-  { path: '/FAQs', component: FAQs, meta: { requiresAuth: true } }
+  { path: '/FAQs', component: FAQs, meta: { requiresAuth: true } },
+  { path: '/userpoint', component: UserPoint, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({

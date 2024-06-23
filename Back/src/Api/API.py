@@ -63,6 +63,27 @@ def register():
 
     return jsonify("Success!"), 200
 
+@app.route('/points', methods=['GET'])
+@token_required
+def get_points(current_user):
+    user_id = dbmanager.get_user_id(current_user)
+    points = dbmanager.get_points(user_id)
+    if points:
+        return jsonify(points), 200
+    else:
+        return jsonify({"error": "No points found"}), 404
+
+@app.route('/old_predictions', methods=['GET'])
+@token_required
+def get_old_predictions(current_user):
+    user_id = dbmanager.get_user_id(current_user)
+    data = dbmanager.get_user_predictions_and_points(user_id)
+    if data:
+        return jsonify(data), 200
+    else:
+        return jsonify({"error": "No points found"}), 404
+
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -101,7 +122,6 @@ def matches(current_user):
     if (current_user == "admin" and results_admin):
         now = datetime.now()
         matches = [match for match in matches if match['Date'] < now]
-
     else:
         predictions = dbmanager.get_user_predictions(current_user)
         for match in matches:

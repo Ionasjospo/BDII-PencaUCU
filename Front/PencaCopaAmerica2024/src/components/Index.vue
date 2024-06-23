@@ -48,6 +48,12 @@
               <span style = "font-weight: bold;">Predict</span>
             </button>
           </div>
+          <div class="col-sm d-flex justify-content-center mb-3">
+            <button @click="showUserPoint" class="button-card">
+              <img :src="require('@/assets/Icons/rating.png')" alt="Ranking Icon" class="icon"/>
+              <span style = "font-weight: bold;">Points</span>
+            </button>
+          </div>
         </div>
         <div v-if="showDropdown" class="notification-dropdown">
           <ul>
@@ -83,6 +89,9 @@ export default {
     },
     showPredict() {
       this.$router.push('/predict');
+    },
+    showUserPoint() {
+      this.$router.push('/userpoint');
     },
     showNotifications() {
       this.showDropdown = !this.showDropdown;
@@ -192,8 +201,8 @@ h1 {
 }
 
 .button-card {
-  width: 350px;
-  height: 350px;
+  width: 255px;
+  height: 255px;
   display: flex;
   flex-direction: column;
   align-items: center;

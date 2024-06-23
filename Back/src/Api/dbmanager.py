@@ -59,6 +59,14 @@ def get_user_id(username):
         return results[0][0]
     return None
 
+def get_points(id_user):
+    query = "SELECT total_points FROM USER WHERE id_student = %s"
+    results = db.fetch_results(query, (id_user,))
+    if results:
+        return results[0][0]
+    return None
+
+
 def update_user(update_data):
     try:
         query = """
@@ -135,6 +143,30 @@ def all_matches():
         }
         matches.append(match)
     return matches
+
+def get_user_predictions_and_points(id_user):
+    if id_user is None:
+        return []
+
+    query = """
+        SELECT p.id_match, home_country.name, score_home_country, away_country.name, score_away_country, points FROM PREDICTION p
+            JOIN COUNTRY home_country ON p.id_home_country = home_country.id_country
+            JOIN COUNTRY away_country ON p.id_away_country = away_country.id_country
+        WHERE id_user = %s;
+    """
+    results = db.fetch_results(query, (id_user,))
+    predictions = []
+    for row in results:
+        predictions.append({
+            "id_match": row[0],
+            "home_country": row[1],
+            "home_score": row[2],
+            "away_country": row[3],
+            "away_score": row[4],
+            "points": row[5]
+        })
+    
+    return predictions
 
 
 def get_user_predictions(username):

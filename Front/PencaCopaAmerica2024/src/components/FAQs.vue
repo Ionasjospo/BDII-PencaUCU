@@ -42,7 +42,7 @@ export default {
                 },
                 {
                     question: 'Can I change my predictions?',
-                    answer: 'You can change your predictions until the start of the first match. After that, predictions are locked.',
+                    answer: 'You can change your predictions until one hour before of each match. After that, predictions are locked.',
                     open: false
                 },
                 {

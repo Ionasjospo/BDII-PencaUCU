@@ -223,7 +223,7 @@ input{
 }
 
 .back-button {
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 10px;
   padding: 5px;
