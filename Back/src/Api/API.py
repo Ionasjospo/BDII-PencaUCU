@@ -201,7 +201,7 @@ def submit_matches(current_user):
 
     success = dbmanager.insert_matches(matches_updated)
     if success:
-        successWinner = dbmanager.update_winner_matches(matches_updated)
+        successWinner = dbmanager.update_winner_matches()
     if successWinner:
         dbmanager.update_predictions_points()
         dbmanager.update_user_points()
