@@ -150,10 +150,13 @@ def get_user_predictions_and_points(id_user):
         return []
 
     query = """
-        SELECT p.id_match, home_country.name, score_home_country, away_country.name, score_away_country, points FROM PREDICTION p
+        SELECT p.id_match, home_country.name, p.score_home_country, away_country.name, p.score_away_country, points FROM PREDICTION p
             JOIN COUNTRY home_country ON p.id_home_country = home_country.id_country
             JOIN COUNTRY away_country ON p.id_away_country = away_country.id_country
-        WHERE id_user = %s;
+            JOIN FOOTBALL_MATCH fm on p.id_match = fm.id_match
+        WHERE id_user = %s
+          AND fm.score_home_country IS NOT NULL
+          AND fm.score_away_country IS NOT NULL;
     """
     results = db.fetch_results(query, (id_user,))
     predictions = []

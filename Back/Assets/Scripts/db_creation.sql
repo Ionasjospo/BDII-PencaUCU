@@ -150,3 +150,4 @@ INSERT INTO FOOTBALL_MATCH(date_match, id_stage, id_home_country, id_away_countr
         ('2024-07-02 22:00', 1, 16, 15, NULL, NULL, NULL);
 
 
+

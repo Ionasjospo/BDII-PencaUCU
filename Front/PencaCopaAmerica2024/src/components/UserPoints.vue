@@ -20,13 +20,19 @@
         </header>
 
         <main>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h5 class="text-center">Total points: {{ total_points }}</h5>
+            <div v-if="!no_predictions" class="">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-center">Total points: {{ total_points }}</h5>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+
+            <div v-if="no_predictions" class="no_predictions">
+                <p>You dont have predictions. Hurry up, lets do it!</p>
             </div>
 
             <div class="container custom-container">
@@ -42,7 +48,7 @@
                             <div class="col-1 text-center">
                                 <input type="number"
                                     v-model.number="old_predictions_data[prediction.id_match].home_score"
-                                    class="form-control score w-15" min="0" />
+                                    class="form-control score w-15" min="0" disabled />
                             </div>
 
                             <div class="col-2 text-center">
@@ -52,7 +58,7 @@
                             <div class="col-1 text-center">
                                 <input type="number"
                                     v-model.number="old_predictions_data[prediction.id_match].away_score"
-                                    class="form-control score w-15" min="0" />
+                                    class="form-control score w-15" min="0" disabled/>
                             </div>
 
                             <div class="col-4 d-flex justify-content-center align-items-center">
@@ -84,6 +90,7 @@ export default {
             showDropdown: false,
             notifications: [],
             total_points: 0,
+            no_predictions: true,
             unreadNotificationsCount: 0,
             old_predictions: [],
             old_predictions_data: {}
@@ -104,12 +111,20 @@ export default {
                 }
             });
             if (response.status === 200) {
+                this.no_predictions = false;
                 this.total_points = response.data;
-            } else {
+            }else if(response.status === 404){
+                //nothing, evit the alert
+            }
+            else {
                 alert('Failed to load points');
             }
         } catch (error) {
-            alert(`Failed to load points: ${error}`);
+            if (error.response && error.response.status === 404) {
+                console.log('No points found');
+            } else {
+                alert(`Failed to load points: ${error}`);
+            }
         }
     },
         async fetchOldsPredictions() {
@@ -121,6 +136,7 @@ export default {
                 }
             })
             if (response.status === 200) {
+                this.no_predictions = false
                 this.old_predictions = response.data
                 this.old_predictions.forEach(prediction => {
                     this.old_predictions_data[prediction.id_match] = {
@@ -131,7 +147,6 @@ export default {
                         points: (prediction.points != null ? prediction.points : 0)
                     }
                 })
-                console.log(this.old_predictions_data)
             } else if (response.status === 204) {
                 alert('No predictions to submit results.')
             } else {
@@ -178,17 +193,24 @@ export default {
         } catch (error) {
             alert(`Failed to load notifications: ${error}`);
         }
+    }, 
+    async fetchData() {
+        await this.fetchTotalPoints();
+        if (!this.no_predictions) {
+            await this.fetchOldsPredictions();
+        }
     }
 },
 mounted() {
-    //   this.fetchNotifications();
-    this.fetchTotalPoints();
-    this.fetchOldsPredictions();
+    this.fetchNotifications();
+    this.fetchData();
 }
 }
 </script>
 
 <style scoped>
+
+
 /* Scrollbar styles */
 .custom-container {
     max-height: 400px; 
@@ -261,6 +283,13 @@ mounted() {
     margin-bottom: 20px;
 }
 
+.no_predictions{
+    font-size: 100%;
+    font-family: sans-serif;
+    margin: 10px;
+    color: #FBEFEF;
+}
+
 .flag {
     width: 30px;
     height: 20px;
@@ -271,7 +300,9 @@ mounted() {
 }
 
 .custom-card-footer {
-    background-color: #f8f9fa;
+  background-color: #12997e;
+  color: #fff;
+  padding: 10px;
 }
 
 

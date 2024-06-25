@@ -6,7 +6,7 @@
     <h1 class="title">PREDICTIONS</h1>
   </header>
 
-  <div class="container">
+  <div class="container custom-container">
     <div v-for="match in matches" :key="match.id_match" class="mb-4 position-relative">
       <div class="card">
         <div class="card-body row align-items-center">
@@ -16,7 +16,8 @@
           </div>
 
           <div class="col-1 text-center">
-            <input type="number" :value="getHomeScore(match)" @input="updateHomeScore(match, $event.target.value)" class="form-control score w-15" min="0" />
+            <input type="number" :value="getHomeScore(match)" @input="updateHomeScore(match, $event.target.value)"
+              class="form-control score w-15" min="0" />
           </div>
 
           <div class="col-2 text-center">
@@ -24,7 +25,8 @@
           </div>
 
           <div class="col-1 text-center">
-            <input type="number" :value="getAwayScore(match)" @input="updateAwayScore(match, $event.target.value)" class="form-control score w-15" min="0" />
+            <input type="number" :value="getAwayScore(match)" @input="updateAwayScore(match, $event.target.value)"
+              class="form-control score w-15" min="0" />
           </div>
 
           <div class="col-4 d-flex justify-content-center align-items-center">
@@ -38,15 +40,15 @@
         </div>
 
         <button @click="goToMatchStats(match.id_match)" class="details-button">
-          <img :src="require('@/assets/Icons/chart-line-.svg')" alt="Details" class="details-icon"/>
+          <img :src="require('@/assets/Icons/chart-line-.svg')" alt="Details" class="details-icon" />
         </button>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="col-12">
-        <button @click="submitPredictions" class="button">Submit predictions</button>
-      </div>
+  <div class="row">
+    <div class="col-12">
+      <button @click="submitPredictions" class="button">Submit predictions</button>
     </div>
   </div>
 </template>
@@ -198,6 +200,65 @@ export default {
 </script>
 
 <style scoped>
+/* Scrollbar styles */
+.custom-container {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #8bcdcd #e0e0e0;
+}
+
+.custom-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.custom-container::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+.custom-container::-webkit-scrollbar-thumb {
+  background-color: #8bcdcd;
+  border-radius: 10px;
+  border: 3px solid #e0e0e0;
+}
+
+.custom-container::-webkit-scrollbar-thumb:hover {
+  background-color: #6bb5b5;
+}
+
+.custom-container {
+  scrollbar-width: thin;
+  scrollbar-color: #8bcdcd #e0e0e0;
+}
+
+.custom-container::-ms-scrollbar {
+  width: 12px;
+}
+
+.custom-container::-ms-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+.custom-container::-ms-scrollbar-thumb {
+  background-color: #8bcdcd;
+  border-radius: 10px;
+  border: 3px solid #e0e0e0;
+}
+
+.custom-container::-ms-scrollbar-thumb:hover {
+  background-color: #6bb5b5;
+}
+
+.scroll-area {
+  position: relative;
+  margin: auto;
+  width: 600px;
+  height: 400px;
+}
+
+
 .title {
   font-size: 700%;
   font-family: 'Impact', sans-serif;
@@ -273,17 +334,16 @@ input {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  z-index: 10; 
-  transition: transform 0.3s ease; 
+  z-index: 10;
+  transition: transform 0.3s ease;
 }
 
 .details-button:hover {
-  transform: scale(1.1); 
+  transform: scale(1.1);
 }
 
 .details-button img {
-  width: 24px; 
+  width: 24px;
   height: 24px;
 }
-
 </style>

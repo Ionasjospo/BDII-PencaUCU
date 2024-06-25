@@ -18,7 +18,7 @@
     </div>
   </div> 
     
-  <div class="container">
+  <div class="container custom-container">
     <div v-for="(matches, group) in groupedMatches" :key="group">
       <div v-for="match in matches" :key="match.Date" class="mb-4">
           
@@ -122,6 +122,66 @@
   </script>
   
   <style scoped>
+  
+/* Scrollbar styles */
+.custom-container {
+    max-height: 400px; 
+    overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: #8bcdcd #e0e0e0; 
+}
+
+.custom-container::-webkit-scrollbar {
+    width: 12px;
+}
+
+.custom-container::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.custom-container::-webkit-scrollbar-thumb {
+    background-color: #8bcdcd;
+    border-radius: 10px;
+    border: 3px solid #e0e0e0;
+}
+
+.custom-container::-webkit-scrollbar-thumb:hover {
+    background-color: #6bb5b5;
+}
+
+.custom-container {
+    scrollbar-width: thin;
+    scrollbar-color: #8bcdcd #e0e0e0;
+}
+
+.custom-container::-ms-scrollbar {
+    width: 12px;
+}
+
+.custom-container::-ms-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.custom-container::-ms-scrollbar-thumb {
+    background-color: #8bcdcd;
+    border-radius: 10px;
+    border: 3px solid #e0e0e0;
+}
+
+.custom-container::-ms-scrollbar-thumb:hover {
+    background-color: #6bb5b5;
+}
+
+.scroll-area {
+  position: relative;
+  margin: auto;
+  width: 600px;
+  height: 400px;
+}
+
+
 .title {
   font-size: 700%;
   font-family: 'Impact', sans-serif;
