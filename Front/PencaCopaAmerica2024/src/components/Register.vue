@@ -206,7 +206,7 @@ export default {
         if (response.status === 200) {
           alert('User registered successfully!')
           if (username === 'admin') {
-            this.$router.push('/admin')
+            this.$router.push({ path: '/adminIndex',  query: { username } })
           } else {
             this.$router.push({ path: '/index', query: { username } })
           }
