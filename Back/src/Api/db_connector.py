@@ -2,13 +2,22 @@ import mysql.connector
 from mysql.connector import Error
 
 class DatabaseConnector:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(DatabaseConnector, cls).__new__(cls)
+        return cls._instance
+    
     def __init__(self, host, port, database, user, password):
-        self.host = host
-        self.port = port
-        self.database = database
-        self.user = user
-        self.password = password
-        self.connection = None
+        if not hasattr(self, 'initialized'):
+            self.host = host
+            self.port = port
+            self.database = database
+            self.user = user
+            self.password = password
+            self.connection = None
+            self.initialized = True
 
     def connect(self):
         try:
