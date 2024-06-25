@@ -48,6 +48,7 @@ class DatabaseConnector:
             self.connection.commit()
             print("Query successful executed")
         except Error as e:
+            self.connection.rollback()
             print(f"Error: {e}")
 
     def fetch_results(self, query, params):
@@ -62,3 +63,16 @@ class DatabaseConnector:
         except Error as e:
             print(f"Error: {e}")
             return None
+    
+    def fetch_one(self, query, params=None):
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(query, params)
+            result = cursor.fetchone()
+            return result
+        except Error as e:
+            print(f"Error: {e}")
+            return None
+        finally:
+            cursor.close()
+            
