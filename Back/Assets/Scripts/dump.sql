@@ -16,7 +16,8 @@ INSERT INTO COUNTRY(name, cup_group) VALUES
 ('Brasil', 'D'),
 ('Colombia', 'D'),
 ('Paraguay', 'D'),
-('Costa Rica', 'D');
+('Costa Rica', 'D')
+(' ', '-'); -- Pais sin equipo para cuando hay empate
 
 -- Etapas de la copa
 INSERT INTO STAGE(name) VALUES

@@ -257,7 +257,7 @@ def update_winner_matches():
             SET id_winner = CASE
                 WHEN score_home_country > score_away_country THEN id_home_country
                 WHEN score_home_country < score_away_country THEN id_away_country
-                WHEN score_home_country = score_away_country THEN 0
+                WHEN score_home_country = score_away_country THEN 17
             END
             WHERE id_winner IS NULL
             AND score_home_country IS NOT NULL
@@ -298,7 +298,7 @@ def update_predictions_points():
                         WHERE FM.id_winner = CASE
                                                 WHEN P.score_home_country > P.score_away_country THEN P.id_home_country
                                                 WHEN P.score_home_country < P.score_away_country THEN P.id_away_country
-                                                ELSE 0
+                                                ELSE 17
                                             END
                             AND !(FM.score_home_country = P.score_home_country AND FM.score_away_country = P.score_away_country)
                     )
