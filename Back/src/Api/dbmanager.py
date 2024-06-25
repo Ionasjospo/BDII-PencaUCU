@@ -16,15 +16,13 @@ def save_user(user):
     champion_prediction = user["Champion_Prediction"]
     second_prediction = user["Second_Prediction"]
 
-    # Verificar si el usuario ya existe
     if find_user(username):
-        return False  # El usuario ya existe
+        return False  
 
-    # Obtener los IDs de los países
     id_champion = get_country_id(champion_prediction)
     id_sub_champion = get_country_id(second_prediction)
     if id_champion is None or id_sub_champion is None:
-        return False  # Uno o ambos países no existen
+        return False  
 
     query = (
         "INSERT INTO USER (document, username, name, surname, email, password, total_points, id_champion, id_sub_champion) "
