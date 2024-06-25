@@ -46,6 +46,6 @@ npm run serve
 #### Uso
 Abre tu navegador web y navega a http://localhost:8080 para acceder a la aplicación.
 Regístrate o inicia sesión para comenzar a hacer predicciones.
-Explora los diferentes eventos deportivos y realiza tus predicciones.
+Explora y realiza tus predicciones.
 Consulta la clasificación para ver cómo te comparas con otros usuarios.
 
