@@ -4,9 +4,12 @@
       <img :src="require('@/assets/Icons/white_back_arrow.svg')" alt="Back to Index" />
     </button>
     <h1 class="title">RESULTS</h1>
+    <div class="header-icons">
+      <img :src="require('@/assets/Icons/logout.png')" alt="Logout Icon" class="icon" @click="logout" />
+    </div>
   </header>
 
-  <div class="container">
+  <div class="container custom-container">
     <div v-for="match in matches" :key="match.id_match" class="mb-4 position-relative">
       <div class="card">
         <div class="card-body row align-items-center">
@@ -16,7 +19,10 @@
           </div>
 
           <div class="col-1 text-center">
-            <input type="number" v-model.number="matchesData[match.id_match].home_score" class="form-control score w-15" min="0" />
+            <input type="number" v-model.number="matchesData[match.id_match].home_score" class="form-control score w-15" min="0"
+            :disabled="matchesData[match.id_match].home_disabled"
+              @blur="confirmScore(match.id_match, 'home')"
+            />
           </div>
 
           <div class="col-2 text-center">
@@ -24,7 +30,11 @@
           </div>
 
           <div class="col-1 text-center">
-            <input type="number" v-model.number="matchesData[match.id_match].away_score" class="form-control score w-15" min="0" />
+            <input type="number" v-model.number="matchesData[match.id_match].away_score" class="form-control score w-15" min="0" 
+              :disabled="matchesData[match.id_match].away_disabled"
+              @blur="confirmScore(match.id_match, 'away')"
+              />
+              
           </div>
 
           <div class="col-4 d-flex justify-content-center align-items-center">
@@ -38,13 +48,12 @@
         </div>
       </div>
     </div>
-
-    <div class="row">
+  </div>
+  <div class="row">
       <div class="col-12">
         <button @click="submitMatches" class="button">Submit Results</button>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -56,6 +65,8 @@ export default {
   data() {
     return {
       matches: [],
+      tempHomeScore: null,
+      tempAwayScore: null,
       matchesData: reactive({})
     }
   },
@@ -93,6 +104,9 @@ export default {
         alert(`Failed to fetch matches: ${error}`)
       }
     },
+    confirmScore(matchId, teamType) {
+      this.matchesData[matchId][`${teamType}_disabled`] = true;
+    },
     initializeMatchesData() {
       this.matches.forEach(match => {
         this.matchesData[match.id_match] = {
@@ -116,6 +130,10 @@ export default {
       const minutes = matchDatetime.getMinutes().toString().padStart(2, '0')
 
       return `${day} de ${month.charAt(0).toUpperCase() + month.slice(1)} | ${hours}:${minutes} hs`
+    },
+    logout() {
+        localStorage.removeItem('token');
+        this.$router.push('/');
     },
     getFlagImage(team) {
       try {
@@ -163,6 +181,80 @@ export default {
 </script>
 
 <style scoped>
+
+/* Scrollbar styles */
+.custom-container {
+    max-height: 400px; 
+    overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: #8bcdcd #e0e0e0; 
+}
+
+.custom-container::-webkit-scrollbar {
+    width: 12px;
+}
+
+.custom-container::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.custom-container::-webkit-scrollbar-thumb {
+    background-color: #8bcdcd;
+    border-radius: 10px;
+    border: 3px solid #e0e0e0;
+}
+
+.custom-container::-webkit-scrollbar-thumb:hover {
+    background-color: #6bb5b5;
+}
+
+.custom-container {
+    scrollbar-width: thin;
+    scrollbar-color: #8bcdcd #e0e0e0;
+}
+
+.custom-container::-ms-scrollbar {
+    width: 12px;
+}
+
+.custom-container::-ms-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.custom-container::-ms-scrollbar-thumb {
+    background-color: #8bcdcd;
+    border-radius: 10px;
+    border: 3px solid #e0e0e0;
+}
+
+.custom-container::-ms-scrollbar-thumb:hover {
+    background-color: #6bb5b5;
+}
+
+.scroll-area {
+  position: relative;
+  margin: auto;
+  width: 600px;
+  height: 400px;
+}
+
+
+.header-icons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.header-icons .icon {
+    width: 24px;
+    height: 24px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+
 .title {
   font-size: 700%;
   font-family: 'Impact', sans-serif;
