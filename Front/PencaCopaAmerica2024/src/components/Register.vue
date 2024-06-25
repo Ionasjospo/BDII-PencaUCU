@@ -110,6 +110,7 @@
           </div>
 
           <button type="submit" class="btn btn-color w-25">Register</button>
+          <p v-if="errorMessage" class="text-danger mb-2">{{ errorMessage }}</p>
         </form>
         <p class="text-center mt-3">
           Already have an account?
@@ -138,8 +139,10 @@ export default {
         champion_prediction: '',
         second_prediction: ''
       },
+      errorMessage: '',
       countries: [
-      ]
+      ],
+      
     }
   },
   methods: {
@@ -160,6 +163,10 @@ export default {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return re.test(email)
     },
+    validateDocument(document) {
+      const re = /^\d{7}-\d$/;
+      return re.test(document);
+    },
     async register() {
       const {
         document,
@@ -171,28 +178,47 @@ export default {
         password2,
         champion_prediction,
         second_prediction
-      } = this.form
+      } = this.form;
 
       if (!document || !username || !first_name || !last_name || !email || !password1 || !password2 || !champion_prediction || !second_prediction) {
-        alert('Please fill in all fields')
-        return
+        this.errorMessage = 'Please fill in all fields';
+        return;
       }
 
-      if(champion_prediction == second_prediction){
-        alert("Champion and runner up must not be the same")
+      if (champion_prediction === second_prediction) {
+        this.errorMessage = 'Champion and runner up must not be the same';
+        return;
       }
 
       if (!this.validateEmail(email)) {
-        alert('Invalid email format')
-        return
+        this.errorMessage = 'Invalid email format';
+        return;
+      }
+
+      if (!this.validateDocument(document)) {
+        this.errorMessage = 'Invalid document format. It must be like 1405189-9';
+        return;
       }
 
       if (password1 !== password2) {
-        alert('Passwords do not match')
-        return
+        this.errorMessage = 'Passwords do not match';
+        return;
       }
 
       try {
+        const validateResponse = await axios.get('http://localhost:5000/validate_register', {
+          params: {
+            username,
+            document,
+            email
+          }
+        });
+
+        if (validateResponse.status !== 200) {
+          this.errorMessage = `Validation failed: ${validateResponse.data.error}`;
+          return;
+        }
+
         const response = await axios.post('http://localhost:5000/register', {
           Document: document,
           Username: username,
@@ -202,19 +228,34 @@ export default {
           Password: password1,
           Champion_Prediction: champion_prediction,
           Second_Prediction: second_prediction
-        })
+        });
+
         if (response.status === 200) {
-          alert('User registered successfully!')
+          alert('User registered successfully!');
           if (username === 'admin') {
-            this.$router.push({ path: '/adminIndex',  query: { username } })
+            this.$router.push({ path: '/adminIndex', query: { username } });
           } else {
-            this.$router.push({ path: '/index', query: { username } })
+            this.$router.push({ path: '/index', query: { username } });
           }
         } else {
-          alert(`Failed to register: ${response.data.error || 'Unknown error'}`)
+          this.errorMessage = `Failed to register: ${response.data.error || 'Unknown error'}`;
         }
       } catch (error) {
-        alert(`Failed to register: ${error}`)
+        if (error.response) {
+          if (error.response.status === 400) {
+            this.errorMessage = 'Missing Username or Password';
+          } else if (error.response.status === 401) {
+            this.errorMessage = 'Invalid user or password';
+          } else if (error.response.status === 404) {
+            this.errorMessage = 'User not found';
+          } else if (error.response.status === 409) {
+            this.errorMessage = error.response.data.error;
+          } else {
+            this.errorMessage = `Failed to register: ${error.response.data.error || 'Unknown error'}`;
+          }
+        } else {
+          this.errorMessage = `Failed to register: ${error.message}`;
+        }
       }
     },
     switchToLogin() {

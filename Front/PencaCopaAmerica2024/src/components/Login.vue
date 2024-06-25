@@ -21,9 +21,11 @@
               <input type="password" class="form-control" id="password" 
               v-model="password" placeholder="Password">
             </div>
-
+            
+            <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
             <div class="text-center">
-              <button type="submit" class="btn btn-color mb-2 w-25">Login</button></div>
+              <button type="submit" class="btn btn-color mb-2 w-25">Login</button>
+            </div>
             
             <div id="emailHelp" class="form-text text-center mb-5 text-dark">Not
               Registered? <a href="#" @click="switchToRegister" class="text-dark fw-bold"> Create an
@@ -51,7 +53,8 @@ export default {
       password: '',
       logo,
       usernameIcon,
-      passwordIcon
+      passwordIcon,
+      errorMessage: ''
     }
   },
   methods: {
@@ -84,15 +87,19 @@ export default {
           } else {
             this.switchToIndex()
           }
-        } else if (response.status === 400) {
-          alert('Login Failed: Missing username or password')
-        } else if (response.status === 401 || response.status === 404) {
-          alert('Login Failed: Invalid username or password')
-        } else {
-          alert(`Login failed: ${response.data.error || 'Unknown error'}`)
+        }  else {
+          this.errorMessage = response.data.error || 'Unknown error';
         }
       } catch (error) {
-        alert(`Failed to login: ${error}`)
+        if(error.response.status === 400){
+          this.errorMessage = 'Missing Username or Password';
+        } else if(error.response.status === 401){
+          this.errorMessage = 'Invalid user or password';
+        } else if(error.response.status === 404){
+          this.errorMessage = 'User not found';
+        } else {
+          this.errorMessage = error.response.data.error || 'Unknown error';
+        }
       }
     }
   }

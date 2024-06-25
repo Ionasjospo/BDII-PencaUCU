@@ -50,6 +50,22 @@ def find_user(username):
         return user
     return None
 
+def validate_username(username):
+    query = "SELECT username FROM USER WHERE username = %s"
+    result = db.fetch_results(query, (username,))
+    return len(result) > 0
+
+def validate_document(document):
+    query = "SELECT document FROM USER WHERE document = %s"
+    result = db.fetch_results(query, (document,))
+    return len(result) > 0
+
+def validate_email(email):
+    query = "SELECT email FROM USER WHERE email = %s"
+    result = db.fetch_results(query, (email,))
+    return len(result) > 0
+
+
 def get_user_id(username):
     query = "SELECT id_student FROM USER WHERE username = %s"
     results = db.fetch_results(query, (username,))

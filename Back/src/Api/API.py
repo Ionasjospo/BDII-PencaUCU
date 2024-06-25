@@ -37,6 +37,24 @@ def get_countries():
     else:
         return jsonify({"error": "No countries found"}), 404
 
+@app.route('/validate_register', methods=['GET'])
+def validate_register():
+    username = request.args.get('username')
+    document = request.args.get('document')
+    email = request.args.get('email')
+
+    if not username or not document or not email:
+        return jsonify({"error": "Missing parameters"}), 400
+
+    if dbmanager.validate_username(username):
+        return jsonify({"error": "Username already exists"}), 409
+    if dbmanager.validate_document(document):
+        return jsonify({"error": "Document already exists"}), 409
+    if dbmanager.validate_email(email):
+        return jsonify({"error": "Email already exists"}), 409
+
+    return jsonify("Success!"), 200
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
