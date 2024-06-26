@@ -36,7 +36,7 @@
         </div>
 
         <div class="card-footer text-center py-2 custom-card-footer">
-          {{ formatDate(match.Date) }}
+          {{ formatDate(match.Date) }} 
         </div>
 
         <button @click="goToMatchStats(match.id_match)" class="details-button">
