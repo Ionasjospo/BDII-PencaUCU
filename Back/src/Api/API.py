@@ -298,7 +298,6 @@ def notify_users(stage_name):
             dbmanager.send_notification(user[0], f"No has cargado tus predicciones para la etapa {stage_name}.")
 
 def schedule_notifications():
-    # Fechas clave para la Copa América 2024
     schedule.every().day.at("09:00").do(check_and_notify, stage_name="Primera ronda - Grupos").until("2024-06-21")
     schedule.every().day.at("09:00").do(check_and_notify, stage_name="Cuartos de final").until("2024-07-05")
     schedule.every().day.at("09:00").do(check_and_notify, stage_name="Semifinales").until("2024-07-10")

@@ -96,7 +96,6 @@ export default {
       } catch (error) {
         alert(`Failed to fetch matches: ${error}`)
       }
-      // Ordenar los partidos por fecha y hora
       this.matches.sort((a, b) => new Date(a.Date) - new Date(b.Date))
     },
     initializePredictions() {

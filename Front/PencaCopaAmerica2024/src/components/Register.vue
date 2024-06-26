@@ -3,96 +3,56 @@
     <main class="d-flex justify-content-center">
       <div class="card p-4 w-100" style="max-width: 600px;">
         <div class="text-center">
-              <img src="../assets/copa_america_logo.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
-                width="200px" alt="profile">
-                <h5 class="title">REGISTER</h5>
-          </div>
+          <img src="../assets/copa_america_logo.png"
+            class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3" width="200px" alt="profile">
+          <h5 class="title">REGISTER</h5>
+        </div>
         <form @submit.prevent="register">
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="first_name" class="form-label d-flex align-items-start">First Name</label>
-              <input
-                type="text"
-                id="firstName"
-                v-model="form.first_name"
-                placeholder="Atilio"
-                class="form-control"
-              />
+              <input type="text" id="firstName" v-model="form.first_name" placeholder="Atilio" class="form-control" />
             </div>
             <div class="col-md-6 mb-3">
               <label for="last_name" class="form-label d-flex align-items-start">Last Name</label>
-              <input
-                type="text"
-                id="lastName"
-                v-model="form.last_name"
-                placeholder="Garcia"
-                class="form-control"
-              />
+              <input type="text" id="lastName" v-model="form.last_name" placeholder="Garcia" class="form-control" />
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="username" class="form-label d-flex align-items-start ">Username</label>
-              <input
-                type="text"
-                id="username"
-                v-model="form.username"
-                placeholder="atilio1899"
-                class="form-control"
-              />
+              <input type="text" id="username" v-model="form.username" placeholder="atilio1899" class="form-control" />
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="document" class="form-label d-flex align-items-start">Document</label>
-              <input
-                type="text"
-                id="document"
-                v-model="form.document"
-                placeholder="1405189-9"
-                class="form-control"
-              />
-            </div>            
+              <input type="text" id="document" v-model="form.document" placeholder="1405189-9" class="form-control" />
+            </div>
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="password1" class="form-label d-flex align-items-start">Password</label>
-              <input
-                type="password"
-                id="password2"
-                v-model="form.password1"
-                placeholder=""
-                class="form-control"
-              />
+              <input type="password" id="password2" v-model="form.password1" placeholder="" class="form-control" />
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="password2" class="form-label d-flex align-items-start">Repit your password</label>
-              <input
-                type="password"
-                id="password2"
-                v-model="form.password2"
-                placeholder="Password"
-                class="form-control"
-              />
+              <input type="password" id="password2" v-model="form.password2" placeholder="Password"
+                class="form-control" />
             </div>
           </div>
 
-          
+
           <div class="mb-3">
             <label for="email" class="form-label d-flex align-items-start">Email</label>
-            <input
-              type="email"
-              id="email"
-              v-model="form.email"
-              placeholder="atiliogarcia@gmail.com"
-              class="form-control"
-            />
+            <input type="email" id="email" v-model="form.email" placeholder="atiliogarcia@gmail.com"
+              class="form-control" />
           </div>
-          
-          
-          
+
+
+
           <div class="mb-3">
             <label for="country" class="form-label d-flex align-items-start">Predict champion</label>
             <select id="champion_prediction" v-model="form.champion_prediction" class="form-select">
@@ -142,7 +102,7 @@ export default {
       errorMessage: '',
       countries: [
       ],
-      
+
     }
   },
   methods: {
@@ -164,8 +124,29 @@ export default {
       return re.test(email)
     },
     validateDocument(document) {
-      const re = /^\d{7}-\d$/;
-      return re.test(document);
+      if (!document || typeof document !== 'string') return false;
+
+      let cleanDocument = document.replace(/\./g, '').replace(/-/g, '');
+      if (cleanDocument.length !== 8) {
+        return false;
+      }
+      let number = cleanDocument.slice(0, 7);
+      let verifier = parseInt(cleanDocument.slice(7, 8), 10);
+
+      let sum = 0;
+      let coefficients = [2, 9, 8, 7, 6, 3, 4];
+
+      for (let i = 0; i < coefficients.length; i++) {
+        sum += coefficients[i] * parseInt(number[i], 10);
+      }
+
+      let mod = sum % 10;
+      let expectedVerifier = mod === 0 ? 0 : 10 - mod;
+
+      return verifier === expectedVerifier;
+    },
+    checkDocument(document) {
+      return this.validateDocument(document);
     },
     async register() {
       const {
@@ -195,8 +176,8 @@ export default {
         return;
       }
 
-      if (!this.validateDocument(document)) {
-        this.errorMessage = 'Invalid document format. It must be like 1405189-9';
+      if (!this.checkDocument(document)) {
+        this.errorMessage = 'Invalid document. It must be like 1405189-1';
         return;
       }
 
@@ -276,22 +257,22 @@ export default {
   color: rgb(5, 43, 66);
 }
 
-.already-account{
+.already-account {
   color: #0e1c36;
   font-weight: bold;
 }
 
-.btn-color{
+.btn-color {
   background-color: #0e1c36;
-  color: #fff; 
+  color: #fff;
 }
 
-.btn-color:hover{
+.btn-color:hover {
   background-color: #12997e;
-  color: #fff; 
+  color: #fff;
 }
 
-.card{
+.card {
   background-color: #f8f9fa;
 }
 
@@ -300,7 +281,7 @@ export default {
   top: 10px;
   left: 10px;
   padding: 5px;
-  background-color: transparent; 
+  background-color: transparent;
   border: none;
 }
 
@@ -309,7 +290,8 @@ export default {
   height: 24px;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-align: center;
 }
 
@@ -342,7 +324,8 @@ label {
   font-weight: bold;
 }
 
-input, select {
+input,
+select {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;

@@ -3,7 +3,6 @@ import time
 
 def start_api():
     api_process = subprocess.Popen(["python", "src/main.py"])
-    # Esperar unos segundos para asegurar que la API esté completamente levantada
     time.sleep(5)
     return api_process
 

@@ -186,11 +186,6 @@ th {
   color: white;
 }
 
-/* .flag {
-  width: 30px;
-  height: 20px;
-} */
-
 .logged-in-user {
   background-color: #007eec !important; 
 }

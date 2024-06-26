@@ -99,7 +99,7 @@ export default {
     onFileChange() {
       const file = this.$refs.profile_picture.files[0];
       this.form.profile_picture = file;
-      this.profileImage = URL.createObjectURL(file); // Update profile image preview
+      this.profileImage = URL.createObjectURL(file); 
     },
     async loadUserProfile() {
       try {

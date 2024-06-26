@@ -13,13 +13,12 @@ def start_and_stop_api():
     import time
 
     api_process = subprocess.Popen(["python", "src/main.py"])
-    time.sleep(3)  # Esperar unos segundos para asegurar que la API esté levantada
+    time.sleep(3)  
     yield
     api_process.terminate()
 
 @pytest.fixture
 def token():
-    # Generar un token JWT para un usuario de prueba
     payload = {
         'username': 'testuser',
         'exp': datetime.now(timezone.utc) + timedelta(hours=1)
@@ -32,8 +31,8 @@ def test_get_countries():
     assert response.status_code in [200, 404]
     if response.status_code == 200:
         json_response = response.json()
-        assert isinstance(json_response, dict)  # Asegura que la respuesta es un diccionario
-        assert len(json_response) > 0  # Asegura que el diccionario no está vacío
+        assert isinstance(json_response, dict)  
+        assert len(json_response) > 0 
     elif response.status_code == 404:
         if response.headers.get('Content-Type') == 'application/json':
             assert response.json() == {"error": "No countries found"}

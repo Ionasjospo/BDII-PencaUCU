@@ -1,7 +1,6 @@
 import bcrypt
 from db_connector import DatabaseConnector
 
-# Inicializar el conector de base de datos
 db = DatabaseConnector(host="localhost", port=3307, database="PENCA_UCU", user="root", password="pencaUCU")
 db.connect()
 
@@ -117,7 +116,6 @@ def get_countries():
     return countries
 
 def matches(group):
-    # In the first stages, the same countries group plays against each other
     group2 = group
     query = (
         "SELECT date_match, home.name, away.name "

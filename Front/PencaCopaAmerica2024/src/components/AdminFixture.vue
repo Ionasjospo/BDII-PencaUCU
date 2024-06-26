@@ -95,7 +95,6 @@
             alert(`Failed to load matches: ${error}`)
           }
         }
-        // Ordenar los partidos por fecha y hora
         fetchedMatches.sort((a, b) => new Date(a.Date) - new Date(b.Date))
         this.matches = fetchedMatches
       },
