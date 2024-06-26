@@ -57,6 +57,18 @@ INSERT INTO FOOTBALL_MATCH(date_match, id_stage, id_home_country, id_away_countr
         ('2024-07-02 22:00', 1, 13, 14, NULL, NULL, NULL),
         ('2024-07-02 22:00', 1, 16, 15, NULL, NULL, NULL);
 
+-- SIMULACION DEL CAMPEONATO
+INSERT INTO FOOTBALL_MATCH(date_match, id_stage, id_home_country, id_away_country, score_home_country, score_away_country, id_winner)
+    VALUES
+        ('2024-07-20 21:00', 4, 1, 7, NULL, NULL, NULL), # CUARTOS: ARG vs VEN
+        ('2024-07-21 21:00', 4, 2, 5, NULL, NULL, NULL), # CUARTOS: CHI vs MEX
+        ('2024-07-22 21:00', 4, 9, 13, NULL, NULL, NULL), # CUARTOS: URU vs BRA
+        ('2024-07-23 21:00', 4, 10, 14, NULL, NULL, NULL), # CUARTOS: EEUU vs COL
+        ('2024-07-24 21:00', 5, 1, 5, NULL, NULL, NULL), # SEMI: ARG vs MEX
+        ('2024-07-25 21:00', 5, 9, 10, NULL, NULL, NULL), # SEMI: URU vs EEUU
+        ('2024-07-25 21:00', 6, 10, 5, NULL, NULL, NULL), # TERCER: MEX vs EEUU
+        ('2024-07-27 21:00', 7, 1, 9, NULL, NULL, NULL); # FINAL: ARG vs URU
+
 -- 50 Usuarios de prueba
 INSERT INTO USER (document, username, name, surname, email, password, total_points, id_champion, id_sub_champion)
 VALUES

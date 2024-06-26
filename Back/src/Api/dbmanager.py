@@ -267,6 +267,7 @@ def insert_matches(matches_updated_data):
         print(f"Error inserting the match results: {e}")
         return False
 
+
 def update_winner_matches():
     try:
         query = """
@@ -346,6 +347,50 @@ def update_user_points():
                 WHERE id_student IN (SELECT id_user FROM Total_points);
             """
         db.execute_query(query, None)
+        
+
+        # Buscar si hay final
+        query = "SELECT id_match FROM FOOTBALL_MATCH WHERE id_stage = 7;"
+        result = db.fetch_results(query, None)
+
+        #Si hay final
+        if result:
+            query = "SELECT id_winner, id_home_country, id_away_country FROM FOOTBALL_MATCH WHERE id_stage = 7;"
+
+            final_data = db.fetch_results(query, None)
+            id_winner, id_home_country, id_away_country = final_data[0]
+            
+            # print(f"Winner: {id_winner}, Home: {id_home_country}, Away: {id_away_country}")
+            champion_id = id_winner
+            subchampion_id =  -1
+
+            if id_home_country != champion_id:
+                subchampion_id = id_home_country
+            else:
+                subchampion_id = id_away_country
+
+            if champion_id != None and subchampion_id != -1:
+                # query para actualizar a los que acertaron al campeon
+                query = """
+                    WITH USER_CHAMPION_PREDICTED AS (SELECT id_student, total_points
+                                                    FROM USER
+                                                    WHERE id_champion = %s)
+                    UPDATE USER u
+                    SET u.total_points = (SELECT ucp.total_points FROM USER_CHAMPION_PREDICTED ucp WHERE ucp.id_student = u.id_student) + 10
+                    WHERE u.id_student IN (SELECT USER_CHAMPION_PREDICTED.id_student FROM USER_CHAMPION_PREDICTED);
+                """
+                db.execute_query(query, (champion_id,))
+
+                query = """
+                    WITH USER_SUBCHAMPION_PREDICTED AS (SELECT id_student, total_points
+                                                        FROM USER
+                                                        WHERE id_sub_champion = %s)
+                    UPDATE USER u
+                    SET u.total_points = (SELECT usp.total_points FROM USER_SUBCHAMPION_PREDICTED usp WHERE usp.id_student = u.id_student) + 5
+                    WHERE u.id_student IN (SELECT USER_SUBCHAMPION_PREDICTED.id_student FROM USER_SUBCHAMPION_PREDICTED);
+                """
+                db.execute_query(query, (subchampion_id,))
+
         return True
     except Exception as e:
             print(f"Error: {e}")
